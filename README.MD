@@ -1,7 +1,3 @@
-Voici un exemple de README complet pour ton projet API_Jeu, basé sur la structure de ton dépôt :
-
----
-
 # API_Jeu
 
 API_Jeu est un projet d’API pour la gestion d’un jeu, construit principalement en JavaScript et TypeScript. Ce projet adopte une architecture modulaire avec des dossiers dédiés aux contrôleurs, modèles, middlewares, et un tableau de bord d’administration.
@@ -79,7 +75,3 @@ Les contributions sont les bienvenues ! N’hésite pas à ouvrir des issues ou 
 ## Auteur
 
 - [Tidragon-coder](https://github.com/Tidragon-coder)
-
----
-
-N’hésite pas à adapter ce modèle selon les spécificités et besoins de ton projet !
