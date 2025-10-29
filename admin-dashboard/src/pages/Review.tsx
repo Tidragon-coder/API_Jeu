@@ -35,7 +35,7 @@ export default function Reviews() {
           return;
         }
 
-        const res = await axios.get("http://localhost:3000/game/reviews", {
+        const res = await axios.get("http://localhost:3000/api/game/reviews", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -63,7 +63,7 @@ export default function Reviews() {
       if (!token) return alert("Token manquant.");
 
       const res = await axios.post(
-        "http://localhost:3000/game/review/new",
+        "http://localhost:3000/api/game/review/new",
         {
           user: newReview.user,
           game: newReview.game,

@@ -12,11 +12,11 @@ exports.createGame = async (req, res) => {
             return res.status(400).json({ message: 'Name is required' });
         }
 
-        const moovie = await Game.create({ title, description, release_year, genre });
+        const game = await Game.create({ title, description, release_year, genre });
 
-        res.status(201).json({ moovie, message: 'Moovie created successfully' });
+        res.status(201).json({ game, message: 'Game created successfully' });
     } catch (error) {
-        res.status(500).json({ Error: error.message, message: 'Error creating moovie' });
+        res.status(500).json({ Error: error.message, message: 'Error creating game' });
     }
 };
 

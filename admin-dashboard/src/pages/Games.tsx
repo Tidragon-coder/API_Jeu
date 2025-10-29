@@ -36,14 +36,14 @@ export default function Games() {
         return;
       }
 
-      const res = await axios.get("http://localhost:3000/game/games/all", {
+      const res = await axios.get("http://localhost:3000/api/game/games/all", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       for (const g of res.data.games) {
         try {
           const genreRes = await axios.get(
-            `http://localhost:3000/game/genre/${g.genre}`,
+            `http://localhost:3000/api/game/genre/${g.genre}`,
             {
               headers: { Authorization: `Bearer ${token}` },
             }
@@ -56,7 +56,7 @@ export default function Games() {
       }
       
       setGames(res.data.games);
-      
+
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.message || "Erreur lors du chargement des jeux.");
@@ -93,7 +93,7 @@ export default function Games() {
       );
 
       // Ajouter le nouveau jeu à la liste
-      setGames((prev) => [...prev, res.data.moovie]); // ton back renvoie { moovie, message }
+      setGames((prev) => [...prev, res.data.game]); // ton back renvoie { game, message }
       setNewGame({ title: "", description: "", release_year: "", genre: "" });
       setShowForm(false);
     } catch (err: unknown) {

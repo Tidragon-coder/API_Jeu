@@ -6,6 +6,7 @@ export default function Dashboard() {
   const [totalUsers, setTotalUsers] = useState<number>(0);
   const [totalGames, setTotalGames] = useState<number>(0);
   const [totalReviews, setTotalReviews] = useState<number>(0);
+  const [totalGenres, setTotalGenres] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,14 +21,17 @@ export default function Dashboard() {
         }
 
         // 🔥 À adapter avec tes vrais endpoints
-        const [usersRes, gamesRes, reviewsRes] = await Promise.all([
-          axios.get("http://localhost:3000/users/", {
+        const [usersRes, gamesRes, reviewsRes, genresRes] = await Promise.all([
+          axios.get("http://localhost:3000/api/users/", {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get("http://localhost:3000/game/games/all", {
+          axios.get("http://localhost:3000/api/game/games/all", {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get("http://localhost:3000/game/reviews", {
+          axios.get("http://localhost:3000/api/game/reviews", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get("http://localhost:3000/api/game/genres", {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
@@ -36,7 +40,7 @@ export default function Dashboard() {
         setTotalUsers(usersRes.data.users?.length || 0);
         setTotalGames(gamesRes.data.games?.length || 0);
         setTotalReviews(reviewsRes.data.review?.length || 0);
-        console.log(usersRes.data);
+        setTotalGenres(genresRes.data.genres?.length || 0);
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
           setError(err.response?.data?.message || "Erreur lors du chargement du tableau de bord.");
@@ -59,6 +63,7 @@ export default function Dashboard() {
       <Card title="Total Users" value={totalUsers.toString()} />
       <Card title="Games" value={totalGames.toString()} />
       <Card title="Reviews" value={totalReviews.toString()} />
+      <Card title="Genres" value={totalGenres.toString()} />
     </div>
   );
 }
