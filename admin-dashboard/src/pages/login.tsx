@@ -28,7 +28,7 @@ const Login = () => {
       console.log("Connexion réussie :", res.data);
 
       
-        navigate("/Dashboard");
+        navigate("/dashboard");
       
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
@@ -88,3 +88,4 @@ const Login = () => {
 };
 
 export default Login;
+
