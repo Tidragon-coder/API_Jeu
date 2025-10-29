@@ -22,7 +22,7 @@ exports.createGame = async (req, res) => {
 
 exports.getAllGames = async (req, res) => {
     try {
-        const games = await Game.find()
+        const games = await Game.find().populate('genre');
         if (!games) {
             return res.status(404).json({ message: 'games not found' });
         }
@@ -34,7 +34,7 @@ exports.getAllGames = async (req, res) => {
 
 exports.getGameById = async (req, res) => {
     try {
-        const game = await Game.findById(req.params.id);
+        const game = await Game.findById(req.params.id).populate('genre');
         if (!game) {
             return res.status(404).json({ message: 'game not found' });
         }

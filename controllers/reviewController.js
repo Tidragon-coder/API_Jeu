@@ -24,7 +24,7 @@ exports.createReview = async (req, res) => {
 
 exports.getAllReviews = async (req, res) => {
     try {
-        const review = await Review.find()
+        const review = await Review.find().populate('game').populate('user');
         if (!review) {
             return res.status(404).json({ message: 'Reviews not found' });
         }
@@ -36,7 +36,7 @@ exports.getAllReviews = async (req, res) => {
 
 exports.getReviewById = async (req, res) => {
     try {
-        const review = await Review.findById(req.params.id);
+        const review = await Review.findById(req.params.id).populate('game').populate('user');
         if (!review) {
             return res.status(404).json({ message: 'Review not found' });
         }

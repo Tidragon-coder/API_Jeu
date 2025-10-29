@@ -9,7 +9,7 @@ interface Game {
   genre: {
     _id: string;
     name: string;
-  };
+  } | string;
 }
 
 export default function Games() {
@@ -17,7 +17,6 @@ export default function Games() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // champs pour ajouter un jeu
   const [showForm, setShowForm] = useState(false);
   const [newGame, setNewGame] = useState({
     title: "",
@@ -26,7 +25,6 @@ export default function Games() {
     genre: "",
   });
 
-  // 🔹 récupérer tous les jeux
   const fetchGames = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -40,23 +38,7 @@ export default function Games() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      for (const g of res.data.games) {
-        try {
-          const genreRes = await axios.get(
-            `http://localhost:3000/api/game/genre/${g.genre}`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
-          g.genre = genreRes.data.genre.name;
-
-        } catch (err) {
-          console.error("Erreur lors de la récupération du genre :", err);
-        }
-      }
-      
-      setGames(res.data.games);
-
+      setGames(Array.isArray(res.data.games) ? res.data.games : []);
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.message || "Erreur lors du chargement des jeux.");
@@ -72,7 +54,6 @@ export default function Games() {
     fetchGames();
   }, []);
 
-  // 🔹 envoyer le nouveau jeu
   const handleAddGame = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -80,7 +61,7 @@ export default function Games() {
       if (!token) return alert("Token manquant.");
 
       const res = await axios.post(
-        "http://localhost:3000/game/new",
+        "http://localhost:3000/api/game/new",
         {
           title: newGame.title,
           description: newGame.description,
@@ -92,8 +73,7 @@ export default function Games() {
         }
       );
 
-      // Ajouter le nouveau jeu à la liste
-      setGames((prev) => [...prev, res.data.game]); // ton back renvoie { game, message }
+      setGames((prev) => [...prev, res.data.game]);
       setNewGame({ title: "", description: "", release_year: "", genre: "" });
       setShowForm(false);
     } catch (err: unknown) {
@@ -107,7 +87,6 @@ export default function Games() {
 
   if (loading)
     return <p className="text-center mt-8 text-gray-600">Chargement des jeux...</p>;
-
   if (error)
     return <p className="text-center mt-8 text-red-500">{error}</p>;
 
@@ -123,7 +102,6 @@ export default function Games() {
         </button>
       </div>
 
-      {/* 🔹 Formulaire d’ajout */}
       {showForm && (
         <form
           onSubmit={handleAddGame}
@@ -170,7 +148,6 @@ export default function Games() {
         </form>
       )}
 
-      {/* 🔹 Table des jeux */}
       <table className="w-full border-collapse bg-white shadow-md rounded-lg">
         <thead>
           <tr className="bg-gray-100">
@@ -182,11 +159,10 @@ export default function Games() {
         </thead>
         <tbody>
           {games.map((g) => (
-
             <tr key={g._id} className="border-t hover:bg-gray-50">
-              <td className="p-3 text-sm  text-gray-700">{g._id}</td>
+              <td className="p-3 text-sm text-gray-700">{g._id}</td>
               <td className="p-3 text-sm font-medium text-gray-900">{g.title}</td>
-              <td className="p-3 text-sm  text-gray-700">
+              <td className="p-3 text-sm text-gray-700">
                 {typeof g.genre === "object" ? g.genre.name : g.genre}
               </td>
               <td className="p-3 text-sm font-medium text-gray-900">{g.release_year || "—"}</td>

@@ -58,12 +58,12 @@ export default function Dashboard() {
   if (loading) return <p className="text-center mt-8 text-gray-600">Chargement...</p>;
   if (error) return <p className="text-center mt-8 text-red-500">{error}</p>;
 
-  return (
-    <div className="p-6 grid grid-cols-3 gap-6 md:grid-cols-1 md:gap-12">
-      <Card title="Total Users" value={totalUsers.toString()} />
-      <Card title="Games" value={totalGames.toString()} />
-      <Card title="Reviews" value={totalReviews.toString()} />
-      <Card title="Genres" value={totalGenres.toString()} />
-    </div>
-  );
+return (
+  <div className="p-6 grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+    <Card title="Total Users" value={totalUsers.toString()} />
+    <Card title="Games" value={totalGames.toString()} />
+    <Card title="Reviews" value={totalReviews.toString()} />
+    <Card title="Genres" value={totalGenres.toString()} />
+  </div>
+);
 }

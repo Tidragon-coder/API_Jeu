@@ -8,6 +8,7 @@ export default function Sidebar() {
     { name: "Games", path: "/games", icon: <Gamepad2 size={18} /> },
     { name: "Reviews", path: "/reviews", icon: <Star size={18} /> },
     { name: "Genres", path: "/genres", icon: <Tag size={18} /> },
+    { name: "Gamelist", path: "/gamelist", icon: <Gamepad2 size={18} /> },
   ];
 
   return (

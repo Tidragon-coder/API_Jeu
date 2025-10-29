@@ -8,6 +8,7 @@ import Login from "./pages/login";
 import Review from "./pages/Review";
 import Genres from "./pages/Genre";
 import Register from "./pages/register";
+import GameList from "./pages/GameList";
 
 export default function App() {
   return (
@@ -36,6 +37,8 @@ export default function App() {
         <Route path="games" element={<Games />} />
         <Route path="reviews" element={<Review />} />
         <Route path="genres" element={<Genres />} />
+        <Route path="gamelist" element={<GameList />} />
+
       </Route>
     ) : (
       <Route path="/*" element={<Navigate to="/login" />} />

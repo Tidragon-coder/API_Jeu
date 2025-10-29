@@ -4,8 +4,15 @@ import { useNavigate } from "react-router-dom";
 
 interface Review {
   _id: string;
-  user: string;
-  game: string;
+  user: {
+    _id: string;
+    username?: string;
+    email?: string;
+  };
+  game: {
+    _id: string;
+    title: string;
+  };
   rating: number;
   comment?: string;
 }
@@ -39,24 +46,8 @@ export default function Reviews() {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        for (const g of res.data.review) {
-          try {
-            const GameRes = await axios.get(
-              `http://localhost:3000/api/game/game/${g.game}`,
-              {
-                headers: { Authorization: `Bearer ${token}` },
-              }
-            );
-            g.game = GameRes.data.game.title;
-
-            console.log("Réponse API :", GameRes.data.game.title);
-          } catch (err) {
-            console.error("Erreur lors de la récupération du jeu :", err);
-          }
-        }
-
-        const data = res.data.review;
-        setReviews(Array.isArray(data) ? data : []);
+        // ✅ on récupère directement les objets peuplés (game + user)
+        setReviews(Array.isArray(res.data.review) ? res.data.review : []);
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
           setError(err.response?.data?.message || "Erreur lors du chargement des reviews.");
@@ -71,7 +62,7 @@ export default function Reviews() {
     fetchReviews();
   }, []);
 
-  const handleAddUser = async (e: React.FormEvent) => {
+  const handleAddReview = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
@@ -90,11 +81,9 @@ export default function Reviews() {
         }
       );
 
-      // ajout dans la liste locale
       setReviews((prev) => [...prev, res.data.review]);
       setNewReview({ user: "", game: "", rating: 0, comment: "" });
       setShowForm(false);
-
       navigate("/reviews");
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
@@ -124,7 +113,7 @@ export default function Reviews() {
 
       {showForm && (
         <form
-          onSubmit={handleAddUser}
+          onSubmit={handleAddReview}
           className="bg-white shadow-md rounded-lg p-4 mb-6 border border-gray-200"
         >
           <div className="grid grid-cols-2 gap-4">
@@ -181,6 +170,9 @@ export default function Reviews() {
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                ID
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 User
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -196,20 +188,18 @@ export default function Reviews() {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {reviews.map((r) => (
-              <tr
-                key={r._id}
-                className="hover:bg-gray-50 transition-colors duration-150"
-              >
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {r.user}
+              <tr key={r._id} className="hover:bg-gray-50 transition-colors duration-150">
+                <td className="px-6 py-4 text-sm text-gray-700">{r._id}</td>
+                <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                  {r.user?.username || r.user?.email || r.user?._id}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {r.game}
+                <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                  {r.game?.title || r.game?._id}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                <td className="px-6 py-4 text-sm font-medium text-gray-900">
                   {r.rating}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 text-sm text-gray-500">
                   {r.comment || "—"}
                 </td>
               </tr>
