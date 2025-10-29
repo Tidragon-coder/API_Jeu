@@ -39,7 +39,22 @@ export default function Reviews() {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        console.log("Réponse API :", res.data);
+        for (const g of res.data.review) {
+          try {
+            const GameRes = await axios.get(
+              `http://localhost:3000/api/game/game/${g.game}`,
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              }
+            );
+            g.game = GameRes.data.game.title;
+
+            console.log("Réponse API :", GameRes.data.game.title);
+          } catch (err) {
+            console.error("Erreur lors de la récupération du jeu :", err);
+          }
+        }
+
         const data = res.data.review;
         setReviews(Array.isArray(data) ? data : []);
       } catch (err: unknown) {

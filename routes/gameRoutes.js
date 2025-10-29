@@ -26,10 +26,16 @@ router.delete('/game/:id', verifyToken, gameController.deleteGame);
 //review
 router.post('/review/new', verifyToken, reviewController.createReview);
 router.get('/reviews', verifyToken, reviewController.getAllReviews);
+router.get('/review/:id', verifyToken, reviewController.getReviewById);
+router.put('/review/:id', verifyToken, reviewController.updateReview);
+router.delete('/review/:id', verifyToken, reviewController.deleteReview);
 
 //watchlist
 router.post('/gamelist/new', verifyToken, gamelistController.createGamelist);
-
+router.get('/gamelists', verifyToken, gamelistController.getAllGamelist);
+router.get('/gamelist/:id', verifyToken, gamelistController.getGamelistById);
+router.put('/gamelist/:id', verifyToken, gamelistController.updateGamelist);
+router.delete('/gamelist/:id', verifyToken, gamelistController.deleteGamelist);
 
 
 // router.get('/:id', verifyToken, movieController.getUserById);
