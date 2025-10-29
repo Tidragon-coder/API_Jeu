@@ -6,12 +6,15 @@ import Users from "./pages/Users";
 import Games from "./pages/Games";
 import Login from "./pages/login";
 import Review from "./pages/Review";
+import Genres from "./pages/Genre";
+import Register from "./pages/register";
 
 export default function App() {
   return (
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
         {/* Partie protégée */}
         <Route
@@ -27,6 +30,7 @@ export default function App() {
                     <Route path="/users" element={<Users />} />
                     <Route path="/games" element={<Games />} />
                     <Route path="/reviews" element={<Review />} />
+                    <Route path="/genres" element={<Genres />} />
                   </Routes>
                 </main>
               </div>
