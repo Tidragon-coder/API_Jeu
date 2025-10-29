@@ -40,7 +40,23 @@ export default function Games() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
+      for (const g of res.data.games) {
+        try {
+          const genreRes = await axios.get(
+            `http://localhost:3000/game/genre/${g.genre}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          g.genre = genreRes.data.genre.name;
+
+        } catch (err) {
+          console.error("Erreur lors de la récupération du genre :", err);
+        }
+      }
+      
       setGames(res.data.games);
+      
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.message || "Erreur lors du chargement des jeux.");
@@ -166,6 +182,7 @@ export default function Games() {
         </thead>
         <tbody>
           {games.map((g) => (
+
             <tr key={g._id} className="border-t hover:bg-gray-50">
               <td className="p-3 text-sm  text-gray-700">{g._id}</td>
               <td className="p-3 text-sm font-medium text-gray-900">{g.title}</td>
