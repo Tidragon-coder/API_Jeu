@@ -14,6 +14,7 @@ interface Game {
 
 export default function Games() {
   const [games, setGames] = useState<Game[]>([]);
+  const [genres, setGenres] = useState<{ _id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -50,8 +51,32 @@ export default function Games() {
     }
   };
 
+  const fetchGenres = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setError("Aucun token trouvé. Veuillez vous reconnecter.");
+        setLoading(false);
+        return;
+      }
+      const res = await axios.get("http://localhost:3000/api/game/genres", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      // Handle genres if needed
+      setGenres(Array.isArray(res.data.genres) ? res.data.genres : []);
+
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message || "Erreur lors du chargement des genres.");
+      } else {
+        setError("Erreur inconnue.");
+      }
+    }
+  };
+
   useEffect(() => {
     fetchGames();
+    fetchGenres();
   }, []);
 
   const handleAddGame = async (e: React.FormEvent) => {
@@ -130,14 +155,21 @@ export default function Games() {
               onChange={(e) => setNewGame({ ...newGame, release_year: e.target.value })}
               className="border p-2 rounded"
             />
-            <input
-              type="text"
-              placeholder="Genre ID"
-              value={newGame.genre}
-              onChange={(e) => setNewGame({ ...newGame, genre: e.target.value })}
-              required
-              className="border p-2 rounded"
-            />
+            { genres.map(g => (
+              <div key={g._id} className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  id={g._id}
+                  name="genre"
+                  value={g._id}
+                  checked={newGame.genre === g._id}
+                  onChange={(e) => setNewGame({ ...newGame, genre: e.target.value })}
+                  className="border"
+                />
+                <label htmlFor={g._id}>{g.name}</label>
+              </div>
+            )) }
+
           </div>
           <button
             type="submit"

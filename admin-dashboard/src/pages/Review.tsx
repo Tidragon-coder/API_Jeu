@@ -19,6 +19,7 @@ interface Review {
 
 export default function Reviews() {
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [game, setGame] = useState<{ _id: string; title: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -58,6 +59,29 @@ export default function Reviews() {
         setLoading(false);
       }
     };
+
+    const fetchGames = async () => {
+      try {
+        const token = localStorage.getItem("token"); 
+        if (!token) {
+          setError("Aucun token trouvé. Veuillez vous reconnecter.");
+          setLoading(false);
+          return;
+        }
+        const res = await axios.get("http://localhost:3000/api/game/games/all", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setGame(Array.isArray(res.data.games) ? res.data.games : []);
+      } catch (err: unknown) {
+        if (axios.isAxiosError(err)) {
+          setError(err.response?.data?.message || "Erreur lors du chargement des jeux.");
+        } else {
+          setError("Erreur inconnue.");
+        }
+      }
+    };
+
+    fetchGames();
 
     fetchReviews();
   }, []);
@@ -125,13 +149,21 @@ export default function Reviews() {
               required
               className="border p-2 rounded"
             />
-            <input
-              type="text"
-              placeholder="Game (ID)"
-              value={newReview.game}
-              onChange={(e) => setNewReview({ ...newReview, game: e.target.value })}
+            <select
+              value={newReview.rating}
+              onChange={(e) =>
+                setNewReview({ ...newReview, game: e.target.value })
+              }
               className="border p-2 rounded"
-            />
+            >
+              <option value="" selected >Sélectionnez un jeu</option>
+              {game.map((g) => (
+                <option key={g._id} value={g._id}>
+                  {g.title || g._id}
+                </option>
+              ))}
+            </select>
+
             <input
               type="number"
               min={1}
