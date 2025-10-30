@@ -17,11 +17,10 @@ export default function Topbar() {
     <header className="flex justify-between items-center px-6 py-3 bg-white shadow-sm">
       <h2 className="text-xl font-semibold text-[#0D0A4B]">Admin Dashboard</h2>
 
-      {/* ✅ Affichage du token (tronqué pour pas surcharger la barre) */}
       <div className="flex items-center gap-4">
         {token ? (
           <span className="text-sm text-gray-700 max-w-xs truncate">
-            Token: {token.slice(0, 20)}...
+            Token: {token}
           </span>
         ) : (
           <span className="text-sm text-gray-500">Aucun token</span>

@@ -228,8 +228,12 @@ export default function Reviews() {
                 <td className="px-6 py-4 text-sm font-medium text-gray-900">
                   {r.game?.title || r.game?._id}
                 </td>
-                <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                  {r.rating}
+                <td
+                  className={`px-6 py-4 text-sm font-medium ${
+                    r.rating >= 4 ?  "text-green-600" : r.rating <=2 ? "text-red-600" : "text-yellow-600"
+                  }`}
+                >
+                  {r.rating <= 2 ? r.rating+" ❌" : r.rating == 3 ? r.rating+" ⚠️" : r.rating+" ✅" }
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-500">
                   {r.comment || "—"}
