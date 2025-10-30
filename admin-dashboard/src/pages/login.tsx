@@ -71,7 +71,7 @@ const Login = () => {
         >
           Se connecter
         </button>
-        <button  className="w-full bg-red-600 hover:bg-blue-700 p-2 rounded font-semibold transition-colors mt-4" onClick={() => navigate("/register")}>Creer un compte</button>
+        {/* <button  className="w-full bg-red-600 hover:bg-blue-700 p-2 rounded font-semibold transition-colors mt-4" onClick={() => navigate("/register")}>Creer un compte</button> */}
 
         {message && (
           <p
