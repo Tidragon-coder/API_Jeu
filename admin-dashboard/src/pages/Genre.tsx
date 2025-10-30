@@ -27,7 +27,7 @@ export default function Genres() {
           return;
         }
 
-        const res = await axios.get("http://localhost:3000/api/game/genres", {
+        const res = await axios.get("http://localhost:3000/api/genre/all", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -56,7 +56,7 @@ export default function Genres() {
       if (!token) return alert("Token manquant.");
 
       const res = await axios.post(
-        "http://localhost:3000/api/game/genre/new",
+        "http://localhost:3000/api/genre/new",
         { name: newGenre.name },
         {
           headers: { Authorization: `Bearer ${token}` },

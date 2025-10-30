@@ -5,6 +5,9 @@ const cors = require('cors');
 
 const userRoutes = require('./routes/userRoutes');
 const gameRoutes = require('./routes/gameRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
+const gameListRoutes = require('./routes/gameListRoutes');
+const genreRoutes = require('./routes/genreRoutes');
 
 const app = express();
 const port = 3000;
@@ -15,6 +18,9 @@ app.use(express.json());
 
 app.use('/api/users', userRoutes);
 app.use('/api/game', gameRoutes);
+app.use('/api/review', reviewRoutes);
+app.use('/api/gamelist', gameListRoutes);
+app.use('/api/genre', genreRoutes);
 
 app.get('/', (req, res) => {
     res.send('Hello World!');

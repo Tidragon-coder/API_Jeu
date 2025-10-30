@@ -35,7 +35,7 @@ export default function Games() {
         return;
       }
 
-      const res = await axios.get("http://localhost:3000/api/game/games/all", {
+      const res = await axios.get("http://localhost:3000/api/game/all", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -59,7 +59,7 @@ export default function Games() {
         setLoading(false);
         return;
       }
-      const res = await axios.get("http://localhost:3000/api/game/genres", {
+      const res = await axios.get("http://localhost:3000/api/genre/all", {
         headers: { Authorization: `Bearer ${token}` },
       });
       // Handle genres if needed

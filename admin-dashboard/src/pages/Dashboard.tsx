@@ -20,23 +20,21 @@ export default function Dashboard() {
           return;
         }
 
-        // 🔥 À adapter avec tes vrais endpoints
         const [usersRes, gamesRes, reviewsRes, genresRes] = await Promise.all([
           axios.get("http://localhost:3000/api/users/", {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get("http://localhost:3000/api/game/games/all", {
+          axios.get("http://localhost:3000/api/game/all", {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get("http://localhost:3000/api/game/reviews", {
+          axios.get("http://localhost:3000/api/review/all", {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get("http://localhost:3000/api/game/genres", {
+          axios.get("http://localhost:3000/api/genre/all", {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
 
-        // selon ton backend, ajuste le nom des clés (ex: usersRes.data.users)
         setTotalUsers(usersRes.data.users?.length || 0);
         setTotalGames(gamesRes.data.games?.length || 0);
         setTotalReviews(reviewsRes.data.review?.length || 0);

@@ -26,7 +26,7 @@ export default function Games() {
         return;
       }
 
-      const res = await axios.get("http://localhost:3000/api/game/gamelists", {
+      const res = await axios.get("http://localhost:3000/api/gamelist/all", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
