@@ -13,8 +13,8 @@ const gameSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['to_play', 'played'],
-    default: 'to_play'
+    enum: ['pending', 'in_progress', 'finished'],
+    default: 'pending'
   }
 }, { timestamps: true });
 
