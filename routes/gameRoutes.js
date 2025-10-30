@@ -6,22 +6,23 @@ const reviewController = require('../controllers/reviewController');
 const gamelistController = require('../controllers/gamelistController');
 
 const verifyToken = require('../middlewares/verifyToken');
+const { authorizeRole } = require('../middlewares/authorizeRole');
 
 
 // Route privé (JWT obligatoire)
 //genre 
-router.post('/genre/new', verifyToken, genreController.createGenre);
+router.post('/genre/new', verifyToken, authorizeRole('admin'), genreController.createGenre);
 router.get('/genres', verifyToken, genreController.getAllGenres);
 router.get('/genre/:id', verifyToken, genreController.getGenreById);
-router.put('/genre/:id', verifyToken, genreController.updateGenre);
-router.delete('/genre/:id', verifyToken, genreController.deleteGenre);
+router.put('/genre/:id', verifyToken, authorizeRole('admin'), genreController.updateGenre);
+router.delete('/genre/:id', verifyToken, authorizeRole('admin'), genreController.deleteGenre);
 
 //game
-router.post('/new', verifyToken, gameController.createGame);
+router.post('/new', verifyToken, authorizeRole('admin'), gameController.createGame);
 router.get('/games/all', verifyToken, gameController.getAllGames);
 router.get('/game/:id', verifyToken, gameController.getGameById);
-router.put('/game/:id', verifyToken, gameController.updateGame);
-router.delete('/game/:id', verifyToken, gameController.deleteGame);
+router.put('/game/:id', verifyToken, authorizeRole('admin'), gameController.updateGame);
+router.delete('/game/:id', verifyToken, authorizeRole('admin'), gameController.deleteGame);
 
 //review
 router.post('/review/new', verifyToken, reviewController.createReview);
