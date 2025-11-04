@@ -16,7 +16,7 @@ export default function App() {
   <Routes>
     {/* Routes publiques */}
     <Route path="/login" element={<Login />} />
-    {/* <Route path="/register" element={<Register />} /> */}
+    <Route path="/register" element={<Register />} />
 
     {/* Routes protégées */}
     {localStorage.getItem("token") ? (

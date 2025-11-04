@@ -36,7 +36,7 @@ export default function GameListPage() {
         return;
       }
 
-      const res = await axios.get("http://localhost:3000/api/gamelist/all", {
+      const res = await axios.get(import.meta.env.VITE_API_URL + "/api/gamelist/all", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -56,7 +56,7 @@ export default function GameListPage() {
   const fetchGames = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:3000/api/game/all", {
+      const res = await axios.get(import.meta.env.VITE_API_URL + "/api/game/all", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setGames(Array.isArray(res.data.games) ? res.data.games : []);
@@ -73,7 +73,7 @@ export default function GameListPage() {
       if (!token) return alert("Token manquant.");
 
       const res = await axios.post(
-        "http://localhost:3000/api/gamelist/new",
+        import.meta.env.VITE_API_URL + "/api/gamelist/new",
         newGameList,
         {
           headers: { Authorization: `Bearer ${token}` },

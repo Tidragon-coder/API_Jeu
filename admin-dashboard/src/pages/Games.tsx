@@ -35,7 +35,7 @@ export default function Games() {
         return;
       }
 
-      const res = await axios.get("http://localhost:3000/api/game/all", {
+      const res = await axios.get(import.meta.env.VITE_API_URL + "/api/game/all", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -59,7 +59,7 @@ export default function Games() {
         setLoading(false);
         return;
       }
-      const res = await axios.get("http://localhost:3000/api/genre/all", {
+      const res = await axios.get(import.meta.env.VITE_API_URL + "/api/genre/all", {
         headers: { Authorization: `Bearer ${token}` },
       });
       // Handle genres if needed
@@ -86,7 +86,7 @@ export default function Games() {
       if (!token) return alert("Token manquant.");
 
       const res = await axios.post(
-        "http://localhost:3000/api/game/new",
+        import.meta.env.VITE_API_URL + "/api/game/new",
         {
           title: newGame.title,
           description: newGame.description,

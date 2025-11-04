@@ -21,16 +21,16 @@ export default function Dashboard() {
         }
 
         const [usersRes, gamesRes, reviewsRes, genresRes] = await Promise.all([
-          axios.get("http://localhost:3000/api/users/", {
+          axios.get(import.meta.env.VITE_API_URL + "/api/users/", {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get("http://localhost:3000/api/game/all", {
+          axios.get(import.meta.env.VITE_API_URL + "/api/game/all", {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get("http://localhost:3000/api/review/all", {
+          axios.get(import.meta.env.VITE_API_URL + "/api/review/all", {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get("http://localhost:3000/api/genre/all", {
+          axios.get(import.meta.env.VITE_API_URL + "/api/genre/all", {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);

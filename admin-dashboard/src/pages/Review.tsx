@@ -43,7 +43,7 @@ export default function Reviews() {
           return;
         }
 
-        const res = await axios.get("http://localhost:3000/api/review/all", {
+        const res = await axios.get(import.meta.env.VITE_API_URL + "/api/review/all", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -68,7 +68,7 @@ export default function Reviews() {
           setLoading(false);
           return;
         }
-        const res = await axios.get("http://localhost:3000/api/game/all", {
+        const res = await axios.get(import.meta.env.VITE_API_URL + "/api/game/all", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setGame(Array.isArray(res.data.games) ? res.data.games : []);
@@ -93,7 +93,7 @@ export default function Reviews() {
       if (!token) return alert("Token manquant.");
 
       const res = await axios.post(
-        "http://localhost:3000/api/review/new",
+        import.meta.env.VITE_API_URL + "/api/review/new",
         {
           user: newReview.user,
           game: newReview.game,
