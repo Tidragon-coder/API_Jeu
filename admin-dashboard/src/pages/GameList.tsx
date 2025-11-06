@@ -137,11 +137,17 @@ export default function GameListPage() {
               className="border p-2 rounded"
             >
               <option value="">Sélectionnez un jeu</option>
-              {games.map((g) => (
-                <option key={g._id} value={g._id}>
-                  {g.title}
+              {games.length === 0 ? (
+                <option key="" value="none" disabled selected>
+                  Pas de jeu créé
                 </option>
-              ))}
+              ) : (
+                games.map((g) => (
+                  <option key={g._id} value={g._id}>
+                    {g.title}
+                  </option>
+                ))
+              )}
             </select>
             <select
               value={newGameList.status}
