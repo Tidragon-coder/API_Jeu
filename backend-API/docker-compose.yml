@@ -6,7 +6,6 @@ services:
     volumes:
       - .:/app
     environment:
-      # MONGO_URI: mongodb+srv://theomoon77_db_user:8J1P7mZpQgpXQl94@bdapi.m79nfd2.mongodb.net/?
       MONGO_URI: mongodb://mongo:27017
     depends_on:
       - mongo
@@ -19,6 +18,19 @@ services:
 
     volumes:
       - mongo-data:/data/db
+
+  frontend:
+    build:
+      context: ../admin-dashboard
+      dockerfile: Dockerfile
+    container_name: front
+    environment:
+      - VITE_API_URI=http://app:3000
+    ports:
+      - "5173:5173" 
+    depends_on:
+      - app
+    restart: unless-stopped
 
 volumes:
   mongo-data:
