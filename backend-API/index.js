@@ -38,6 +38,6 @@ mongoose.connect(process.env.MONGO_URI)
 
 
 
-app.listen (port, () => {
-    console.log(`Serveur online at http://localhost:${port}`);
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Serveur online at http://0.0.0.0:${port}`);
 });
