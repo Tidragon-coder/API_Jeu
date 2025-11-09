@@ -10,19 +10,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Récupération du code
+      # 1️⃣ Checkout du repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Installation de Node.js (pour builder le frontend React)
+      # 2️⃣ Installer Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # 3️⃣ Installation des dépendances et build du frontend
+      # 3️⃣ Installer dépendances et build frontend
       - name: Build frontend
         run: |
           cd admin-dashboard
           npm ci
           npm run build
+
+      # 4️⃣ Transfert du build sur le VPS
+      - name: Sync frontend build to VPS
+        uses: burnett01/rsync-deployments@5.2
+        with:
+          switches: -avzr --delete
+          path: admin-dashboard/build/
+          remote_path: ${{ secrets.VPS_PATH }}
+          remote_host: ${{ secrets.VPS_HOST }}
+          remote_user: ${{ secrets.VPS_USER }}
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
