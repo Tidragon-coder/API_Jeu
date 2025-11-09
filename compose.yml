@@ -1,0 +1,40 @@
+services:
+  mongo:
+    image: mongo:7.0
+    restart: always
+    ports:
+      - "27017:27017" 
+
+    volumes:
+      - mongo-data:/data/db
+  node:
+    build:
+      context: backend-API
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "3000:3000" 
+    volumes:
+      - ./backend-API/:/app
+    env_file:
+      - backend-API/.env
+    environment:
+      MONGO_URI: mongodb://mongo:27017
+      # MONGO_URI: ${MONGO_URI}
+    depends_on:
+      - mongo
+  vite:
+    build:
+      context: admin-dashboard
+      dockerfile: Dockerfile
+    container_name: frontend
+    environment:
+      - VITE_API_URI=http://app:3000
+    ports:
+      - "5173:5173" 
+    depends_on:
+      - app
+    restart: unless-stopped
+
+volumes:
+  mongo-data:

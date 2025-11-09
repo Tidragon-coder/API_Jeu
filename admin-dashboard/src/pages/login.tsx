@@ -7,13 +7,15 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL || '/api';
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setMessage(null);
 
     try {
-      const res = await axios.post(import.meta.env.VITE_API_URL + "/api/users/login", {
+      const res = await axios.post(`${apiUrl}/users/login`, {
         email,
         password,
       });
