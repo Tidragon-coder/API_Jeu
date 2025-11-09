@@ -27,14 +27,7 @@ jobs:
       - name: Sync frontend build to VPS
         uses: burnett01/rsync-deployments@5.2
         with:
-          switches: >
-            -avzr 
-            --delete
-            --exclude=".git"
-            --exclude="node_modules"
-            --exclude="mongo-data"
-            --exclude="admin-dashboard/.env"
-            --exclude="backend-API/.env"
+          switches: -avzr --delete --exclude=".git" --exclude="node_modules"--exclude="mongo-data" --exclude="admin-dashboard/.env"--exclude="backend-API/.env"
           path: admin-dashboard/
           remote_path: ${{ secrets.VPS_PATH }}
           remote_host: ${{ secrets.VPS_HOST }}
