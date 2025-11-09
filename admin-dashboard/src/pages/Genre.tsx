@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+const apiUrl = import.meta.env.VITE_API_URL || '/api';
+
 interface Genre {
   _id: string;
   name: string;
@@ -27,8 +29,8 @@ export default function Genres() {
           return;
         }
 
-        const res = await axios.get(import.meta.env.VITE_API_URL + "/api/genre/all", {
-          headers: { Authorization: `Bearer ${token}` },
+        const res = await axios.get(`${apiUrl}/genre/all`, {
+          headers: { Authorization: `bearer ${token}` },
         });
 
         console.log("Genres reçus :", res.data);
@@ -56,10 +58,10 @@ export default function Genres() {
       if (!token) return alert("Token manquant.");
 
       const res = await axios.post(
-        import.meta.env.VITE_API_URL + "/api/genre/new",
+        `${apiUrl}/genre/new`,
         { name: newGenre.name },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `bearer ${token}` },
         }
       );
 
@@ -91,7 +93,7 @@ export default function Genres() {
         className="bg-[#4F7C77] text-white px-4 py-2 rounded-lg hover:opacity-80 mb-4"
         onClick={() => setShowForm(!showForm)}
       >
-        {showForm ? "Fermer le formulaire" : "➕ Ajouter un genre"}
+        {showForm ? "Fermer le formulaire" : "Ajouter un genre"}
       </button>
 
       {/* Formulaire d’ajout */}
@@ -146,3 +148,4 @@ export default function Genres() {
     </div>
   );
 }
+

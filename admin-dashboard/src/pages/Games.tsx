@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+const apiUrl = import.meta.env.VITE_API_URL || '/api';
+
 interface Game {
   _id: string;
   title: string;
@@ -35,8 +37,8 @@ export default function Games() {
         return;
       }
 
-      const res = await axios.get(import.meta.env.VITE_API_URL + "/api/game/all", {
-        headers: { Authorization: `Bearer ${token}` },
+      const res = await axios.get(`${apiUrl}/game/all`, {
+        headers: { Authorization: `bearer ${token}` },
       });
 
       setGames(Array.isArray(res.data.games) ? res.data.games : []);
@@ -59,8 +61,8 @@ export default function Games() {
         setLoading(false);
         return;
       }
-      const res = await axios.get(import.meta.env.VITE_API_URL + "/api/genre/all", {
-        headers: { Authorization: `Bearer ${token}` },
+      const res = await axios.get(`${apiUrl}/genre/all`, {
+        headers: { Authorization: `bearer ${token}` },
       });
       // Handle genres if needed
       setGenres(Array.isArray(res.data.genres) ? res.data.genres : []);
@@ -86,7 +88,7 @@ export default function Games() {
       if (!token) return alert("Token manquant.");
 
       const res = await axios.post(
-        import.meta.env.VITE_API_URL + "/api/game/new",
+        `${apiUrl}/game/new`,
         {
           title: newGame.title,
           description: newGame.description,
@@ -94,7 +96,7 @@ export default function Games() {
           genre: newGame.genre,
         },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `bearer ${token}` },
         }
       );
 
@@ -155,7 +157,7 @@ export default function Games() {
               onChange={(e) => setNewGame({ ...newGame, release_year: e.target.value })}
               className="border p-2 rounded"
             />
-            { genres.map(g => (
+            {genres.map(g => (
               <div key={g._id} className="flex items-center space-x-2">
                 <input
                   type="radio"
@@ -205,3 +207,4 @@ export default function Games() {
     </div>
   );
 }
+

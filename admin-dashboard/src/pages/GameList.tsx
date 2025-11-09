@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+const apiUrl = import.meta.env.VITE_API_URL || '/api';
+
 interface Game {
   _id: string;
   title: string;
@@ -36,8 +38,8 @@ export default function GameListPage() {
         return;
       }
 
-      const res = await axios.get(import.meta.env.VITE_API_URL + "/api/gamelist/all", {
-        headers: { Authorization: `Bearer ${token}` },
+      const res = await axios.get(`${apiUrl}/gamelist/all`, {
+        headers: { Authorization: `bearer ${token}` },
       });
 
       setGameList(Array.isArray(res.data.gamelist) ? res.data.gamelist : []);
@@ -56,8 +58,8 @@ export default function GameListPage() {
   const fetchGames = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get(import.meta.env.VITE_API_URL + "/api/game/all", {
-        headers: { Authorization: `Bearer ${token}` },
+      const res = await axios.get(`${apiUrl}/game/all`, {
+        headers: { Authorization: `bearer ${token}` },
       });
       setGames(Array.isArray(res.data.games) ? res.data.games : []);
     } catch (err) {
@@ -73,10 +75,10 @@ export default function GameListPage() {
       if (!token) return alert("Token manquant.");
 
       const res = await axios.post(
-        import.meta.env.VITE_API_URL + "/api/gamelist/new",
+        `${apiUrl}/gamelist/new`,
         newGameList,
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `bearer ${token}` },
         }
       );
 

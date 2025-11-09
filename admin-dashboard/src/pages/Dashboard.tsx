@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Card from "../components/Card";
 
+const apiUrl = import.meta.env.VITE_API_URL || '/api';
+
 export default function Dashboard() {
   const [totalUsers, setTotalUsers] = useState<number>(0);
   const [totalGames, setTotalGames] = useState<number>(0);
@@ -9,6 +11,7 @@ export default function Dashboard() {
   const [totalGenres, setTotalGenres] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -21,23 +24,23 @@ export default function Dashboard() {
         }
 
         const [usersRes, gamesRes, reviewsRes, genresRes] = await Promise.all([
-          axios.get(import.meta.env.VITE_API_URL + "/api/users/", {
-            headers: { Authorization: `Bearer ${token}` },
+          axios.get(`${apiUrl}/users/`, {
+            headers: { Authorization: `bearer ${token}` },
           }),
-          axios.get(import.meta.env.VITE_API_URL + "/api/game/all", {
-            headers: { Authorization: `Bearer ${token}` },
+          axios.get(`${apiUrl}/game/all`, {
+            headers: { Authorization: `bearer ${token}` },
           }),
-          axios.get(import.meta.env.VITE_API_URL + "/api/review/all", {
-            headers: { Authorization: `Bearer ${token}` },
+          axios.get(`${apiUrl}/review/all`, {
+            headers: { Authorization: `bearer ${token}` },
           }),
-          axios.get(import.meta.env.VITE_API_URL + "/api/genre/all", {
-            headers: { Authorization: `Bearer ${token}` },
+          axios.get(`${apiUrl}/genre/all`, {
+            headers: { Authorization: `bearer ${token}` },
           }),
         ]);
 
         setTotalUsers(usersRes.data.users?.length || 0);
         setTotalGames(gamesRes.data.games?.length || 0);
-        setTotalReviews(reviewsRes.data.review?.length || 0);
+        setTotalReviews(reviewsRes.data.reviews?.length || 0);
         setTotalGenres(genresRes.data.genres?.length || 0);
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
@@ -56,12 +59,12 @@ export default function Dashboard() {
   if (loading) return <p className="text-center mt-8 text-gray-600">Chargement...</p>;
   if (error) return <p className="text-center mt-8 text-red-500">{error}</p>;
 
-return (
-  <div className="p-6 grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-    <Card title="Total Users" value={totalUsers.toString()} />
-    <Card title="Games" value={totalGames.toString()} />
-    <Card title="Reviews" value={totalReviews.toString()} />
-    <Card title="Genres" value={totalGenres.toString()} />
-  </div>
-);
+  return (
+    <div className="p-6 grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+      <Card title="Total Users" value={totalUsers.toString()} />
+      <Card title="Games" value={totalGames.toString()} />
+      <Card title="Reviews" value={totalReviews.toString()} />
+      <Card title="Genres" value={totalGenres.toString()} />
+    </div>
+  );
 }

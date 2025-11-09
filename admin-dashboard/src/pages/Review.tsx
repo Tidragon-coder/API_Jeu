@@ -30,8 +30,11 @@ export default function Reviews() {
     rating: 0,
     comment: "",
   });
+  const apiUrl = import.meta.env.VITE_API_URL || '/api';
+
 
   const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -43,11 +46,11 @@ export default function Reviews() {
           return;
         }
 
-        const res = await axios.get(import.meta.env.VITE_API_URL + "/api/review/all", {
-          headers: { Authorization: `Bearer ${token}` },
+        const res = await axios.get(`${apiUrl}/review/all`, {
+          headers: { Authorization: `bearer ${token}` },
         });
 
-        // ✅ on récupère directement les objets peuplés (game + user)
+        // on récupère directement les objets peuplés (game + user)
         setReviews(Array.isArray(res.data.review) ? res.data.review : []);
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
@@ -68,8 +71,8 @@ export default function Reviews() {
           setLoading(false);
           return;
         }
-        const res = await axios.get(import.meta.env.VITE_API_URL + "/api/game/all", {
-          headers: { Authorization: `Bearer ${token}` },
+        const res = await axios.get(`${apiUrl}/game/all`, {
+          headers: { Authorization: `bearer ${token}` },
         });
         setGame(Array.isArray(res.data.games) ? res.data.games : []);
       } catch (err: unknown) {
@@ -93,7 +96,7 @@ export default function Reviews() {
       if (!token) return alert("Token manquant.");
 
       const res = await axios.post(
-        import.meta.env.VITE_API_URL + "/api/review/new",
+        `${apiUrl}/review/new`,
         {
           user: newReview.user,
           game: newReview.game,
@@ -101,7 +104,7 @@ export default function Reviews() {
           comment: newReview.comment,
         },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `bearer ${token}` },
         }
       );
 
@@ -113,7 +116,7 @@ export default function Reviews() {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.message || "Erreur lors de la création de l’avis.");
       } else {
-        setError("Erreur inconnue.");
+        setError("Erreur inconnune.");
       }
     }
   };
@@ -132,7 +135,7 @@ export default function Reviews() {
         className="bg-[#4F7C77] text-white px-4 py-2 rounded-lg hover:opacity-80 mb-4"
         onClick={() => setShowForm(!showForm)}
       >
-        {showForm ? "Fermer le formulaire" : "➕ Ajouter un avis"}
+        {showForm ? "Fermer le formulaire" : " Ajouter un avis"}
       </button>
 
       {showForm && (
@@ -150,7 +153,7 @@ export default function Reviews() {
               className="border p-2 rounded"
             />
             <select
-              value={newReview.rating}
+              value={newReview.game}
               onChange={(e) =>
                 setNewReview({ ...newReview, game: e.target.value })
               }
@@ -246,3 +249,5 @@ export default function Reviews() {
     </div>
   );
 }
+
+

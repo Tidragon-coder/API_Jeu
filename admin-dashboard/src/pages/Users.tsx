@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+const apiUrl = import.meta.env.VITE_API_URL || '/api';
+
 interface User {
   _id: string;
   name: string;
@@ -15,7 +17,7 @@ export default function Users() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // 🔹 États pour le formulaire d’ajout
+  // États pour le formulaire d’ajout
   const [showForm, setShowForm] = useState(false);
   const [newUser, setNewUser] = useState({
     name: "",
@@ -24,7 +26,8 @@ export default function Users() {
     password: "",
   });
 
-  // 🔹 Récupérer les utilisateurs
+
+  // Récupérer les utilisateurs
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -34,8 +37,8 @@ export default function Users() {
         return;
       }
 
-      const res = await axios.get(import.meta.env.VITE_API_URL + "/api/users/", {
-        headers: { Authorization: `Bearer ${token}` },
+      const res = await axios.get(`${apiUrl}/users/`, {
+        headers: { Authorization: `bearer ${token}` },
       });
 
       setUsers(res.data.users || res.data);
@@ -54,7 +57,7 @@ export default function Users() {
     fetchUsers();
   }, []);
 
-  // 🔹 Ajouter un utilisateur
+  // Ajouter un utilisateur
   const handleAddUser = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -62,7 +65,7 @@ export default function Users() {
       if (!token) return alert("Token manquant.");
 
       const res = await axios.post(
-        import.meta.env.VITE_API_URL + "/api/users/register",
+        `${apiUrl}/users/register`,
         {
           name: newUser.name,
           nickname: newUser.nickname,
@@ -70,11 +73,11 @@ export default function Users() {
           password: newUser.password,
         },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `bearer ${token}` },
         }
       );
 
-      // ajout dans la liste locale
+      // Ajout dans la liste locale
       setUsers((prev) => [...prev, res.data.user]);
       setNewUser({ name: "", nickname: "", email: "", password: "" });
       setShowForm(false);
@@ -105,7 +108,7 @@ export default function Users() {
         </button>
       </div>
 
-      {/* 🔹 Formulaire d’ajout d’un utilisateur */}
+      {/* Formulaire d’ajout d’un utilisateur */}
       {showForm && (
         <form
           onSubmit={handleAddUser}
@@ -154,7 +157,7 @@ export default function Users() {
         </form>
       )}
 
-      {/* 🔹 Tableau des utilisateurs */}
+      {/* Tableau des utilisateurs */}
       <div className="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -205,3 +208,4 @@ export default function Users() {
     </div>
   );
 }
+
