@@ -44,6 +44,10 @@ jobs:
           port: 22
           script: |
             cd /root/project/API_Jeu
+            echo "Recreating admin-dashboard .env"
+            cat > admin-dashboard/.env << EOF
+            VITE_API_URL=${{ secrets.VITE_API_URL }}
+            EOF
             docker compose -f compose.prod.yml down
             docker compose -f compose.prod.yml up -d --build
 
