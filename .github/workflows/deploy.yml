@@ -3,7 +3,7 @@ name: CI/CD Deploy
 on:
   push:
     branches:
-      - main  # la pipeline se lancera quand tu push sur main
+      - feature/gitaction
 
 jobs:
   build:
