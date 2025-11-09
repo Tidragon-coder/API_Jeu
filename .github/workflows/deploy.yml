@@ -13,17 +13,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # - name: Setup Node.js
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: 20
-
-      # - name: Build frontend
-      #   run: |
-      #     cd admin-dashboard
-      #     npm ci
-      #     npm run build
-
       - name: Sync frontend build to VPS
         uses: burnett01/rsync-deployments@5.2
         with:
