@@ -43,7 +43,7 @@ jobs:
           remote_port: 22
 
       - name: Restart application on VPS
-        uses: appleboy/ssh-action@1.0.0
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
