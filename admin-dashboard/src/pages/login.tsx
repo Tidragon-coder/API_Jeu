@@ -27,10 +27,8 @@ const Login = () => {
 
       // ✅ Message de succès
       setMessage(message || "Connexion réussie ✅");
-      console.log("Connexion réussie :", res.data);
 
-      
-        navigate("/dashboard");
+      navigate("/dashboard");
       
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
@@ -73,7 +71,7 @@ const Login = () => {
         >
           Se connecter
         </button>
-        {/* <button  className="w-full bg-red-600 hover:bg-blue-700 p-2 rounded font-semibold transition-colors mt-4" onClick={() => navigate("/register")}>Creer un compte</button> */}
+        <button  className="w-full bg-red-600 hover:bg-blue-700 p-2 rounded font-semibold transition-colors mt-4" onClick={() => navigate("/register")}>Creer un compte ou tu es morttt ues tes  </button>
 
         {message && (
           <p

@@ -10,40 +10,48 @@ import Genres from "./pages/Genre";
 import Register from "./pages/register";
 import GameList from "./pages/GameList";
 
+function Protected() {
+  const token = localStorage.getItem("token");
+
+  // on renvoie vers /login
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return (
+    <div className="flex">
+      <Sidebar />
+      <main className="ml-60 w-full bg-gray-50 min-h-screen">
+        <Topbar />
+        <Outlet />
+      </main>
+    </div>
+  );
+}
+
 export default function App() {
   return (
-<Router>
-  <Routes>
-    {/* Routes publiques */}
-    <Route path="/login" element={<Login />} />
-    <Route path="/register" element={<Register />} />
+    <Router>
+      <Routes>
+        {/* Routes publiques */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
-    {/* Routes protégées */}
-    {localStorage.getItem("token") ? (
-      <Route
-        path="/"
-        element={
-          <div className="flex">
-            <Sidebar />
-            <main className="ml-60 w-full bg-gray-50 min-h-screen">
-              <Topbar />
-              <Outlet />
-            </main>
-          </div>
-        }
-      >
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="users" element={<Users />} />
-        <Route path="games" element={<Games />} />
-        <Route path="reviews" element={<Review />} />
-        <Route path="genres" element={<Genres />} />
-        <Route path="gamelist" element={<GameList />} />
+        {/* Routes protégées */}
+        <Route element={<Protected/>}>
+          {/* / -> redirige automatiquement vers /dashboard */}
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/games" element={<Games />} />
+          <Route path="/reviews" element={<Review />} />
+          <Route path="/genres" element={<Genres />} />
+          <Route path="/gamelist" element={<GameList />} />
+        </Route>
 
-      </Route>
-    ) : (
-      <Route path="/*" element={<Navigate to="/login" />} />
-    )}
-  </Routes>
-</Router>
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </Router>
   );
 }
