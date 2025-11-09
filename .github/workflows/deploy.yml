@@ -23,6 +23,6 @@ jobs:
       # 3️⃣ Installation des dépendances et build du frontend
       - name: Build frontend
         run: |
-          cd frontend
+          cd admin-dashboard
           npm ci
           npm run build
