@@ -33,7 +33,6 @@ export default function Genres() {
           headers: { Authorization: `bearer ${token}` },
         });
 
-        console.log("Genres reçus :", res.data);
         // Certains backends renvoient { genres: [...] }, d'autres directement le tableau
         setGenres(res.data.genres || res.data);
       } catch (err: unknown) {

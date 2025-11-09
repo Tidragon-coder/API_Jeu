@@ -27,7 +27,6 @@ const Login = () => {
 
       // ✅ Message de succès
       setMessage(message || "Connexion réussie ✅");
-      console.log("Connexion réussie :", res.data);
 
       
         navigate("/dashboard");

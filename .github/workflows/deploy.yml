@@ -1,0 +1,28 @@
+name: CI/CD Deploy
+
+on:
+  push:
+    branches:
+      - main  # la pipeline se lancera quand tu push sur main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Récupération du code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Installation de Node.js (pour builder le frontend React)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # 3️⃣ Installation des dépendances et build du frontend
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm ci
+          npm run build
