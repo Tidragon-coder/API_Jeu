@@ -23,7 +23,7 @@ services:
       dockerfile: Dockerfile.prod
     container_name: frontend
     environment:
-      - VITE_API_URI=http://31.297.35.91
+      - VITE_API_URI=http://31.207.35.91/
     ports:
       - "4173:4173" 
     depends_on:
