@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import callApi from "../api/api";
 
-const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
 interface User {
   _id: string;
@@ -37,11 +37,9 @@ export default function Users() {
         return;
       }
 
-      const res = await axios.get(`${apiUrl}/users/`, {
-        headers: { Authorization: `bearer ${token}` },
-      });
+      const data = await callApi('/users/', token, 'GET');
+      setUsers(data.users || data);
 
-      setUsers(res.data.users || res.data);
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.message || "Erreur lors du chargement des utilisateurs.");
@@ -64,18 +62,12 @@ export default function Users() {
       const token = localStorage.getItem("token");
       if (!token) return alert("Token manquant.");
 
-      const res = await axios.post(
-        `${apiUrl}/users/register`,
-        {
-          name: newUser.name,
-          nickname: newUser.nickname,
-          email: newUser.email,
-          password: newUser.password,
-        },
-        {
-          headers: { Authorization: `bearer ${token}` },
-        }
-      );
+      const res = await callApi('/user/new', token, 'POST', {
+        name: newUser.name,
+        nickname: newUser.nickname,
+        email: newUser.email,
+        password: newUser.password,
+      });
 
       // Ajout dans la liste locale
       setUsers((prev) => [...prev, res.data.user]);

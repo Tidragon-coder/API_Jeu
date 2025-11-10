@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
-const apiUrl = import.meta.env.VITE_API_URL || '/api';
+import callApi from "../api/api";
 
 interface Game {
   _id: string;
@@ -37,11 +36,9 @@ export default function Games() {
         return;
       }
 
-      const res = await axios.get(`${apiUrl}/game/all`, {
-        headers: { Authorization: `bearer ${token}` },
-      });
+      const res = await callApi('/game/all', token, 'GET');
 
-      setGames(Array.isArray(res.data.games) ? res.data.games : []);
+      setGames(Array.isArray(res.games) ? res.games : []);
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.message || "Erreur lors du chargement des jeux.");
@@ -61,11 +58,9 @@ export default function Games() {
         setLoading(false);
         return;
       }
-      const res = await axios.get(`${apiUrl}/genre/all`, {
-        headers: { Authorization: `bearer ${token}` },
-      });
-      // Handle genres if needed
-      setGenres(Array.isArray(res.data.genres) ? res.data.genres : []);
+
+      const res = await callApi('/genre/all', token, 'GET');
+      setGenres(Array.isArray(res.genres) ? res.genres : []);
 
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
@@ -87,20 +82,14 @@ export default function Games() {
       const token = localStorage.getItem("token");
       if (!token) return alert("Token manquant.");
 
-      const res = await axios.post(
-        `${apiUrl}/game/new`,
-        {
-          title: newGame.title,
-          description: newGame.description,
-          release_year: Number(newGame.release_year),
-          genre: newGame.genre,
-        },
-        {
-          headers: { Authorization: `bearer ${token}` },
-        }
-      );
+      const res = await callApi('/game/new', token, 'POST', {
+        title: newGame.title,
+        description: newGame.description,
+        release_year: Number(newGame.release_year),
+        genre: newGame.genre,
+      });
 
-      setGames((prev) => [...prev, res.data.game]);
+      setGames((prev) => [...prev, res.game]);
       setNewGame({ title: "", description: "", release_year: "", genre: "" });
       setShowForm(false);
     } catch (err: unknown) {

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import callApi from "../api/api";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const navigate = useNavigate();
-  const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -15,12 +15,9 @@ const Login = () => {
     setMessage(null);
 
     try {
-      const res = await axios.post(`${apiUrl}/users/login`, {
-        email,
-        password,
-      });
 
-      const { token, message } = res.data;
+      const res = await callApi('/users/login', '', 'POST', {email, password});
+      const { token, message } = res;
 
       // ✅ Sauvegarde du token
       localStorage.setItem("token", token);

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
-const apiUrl = import.meta.env.VITE_API_URL || '/api';
+import callApi from "../api/api";
 
 interface Genre {
   _id: string;
@@ -29,12 +28,9 @@ export default function Genres() {
           return;
         }
 
-        const res = await axios.get(`${apiUrl}/genre/all`, {
-          headers: { Authorization: `bearer ${token}` },
-        });
+        const data = await callApi('/genre/all', token, 'GET');
+        setGenres(data.genres || data);
 
-        // Certains backends renvoient { genres: [...] }, d'autres directement le tableau
-        setGenres(res.data.genres || res.data);
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
           setError(err.response?.data?.message || "Erreur lors du chargement des genres.");
@@ -56,16 +52,10 @@ export default function Genres() {
       const token = localStorage.getItem("token");
       if (!token) return alert("Token manquant.");
 
-      const res = await axios.post(
-        `${apiUrl}/genre/new`,
-        { name: newGenre.name },
-        {
-          headers: { Authorization: `bearer ${token}` },
-        }
-      );
+      const res = await callApi('/genre/new', token, 'POST', { name: newGenre.name });
 
       // ajout du genre dans la liste locale
-      setGenres((prev) => [...prev, res.data.genre || res.data]);
+      setGenres((prev) => [...prev, res.genre || res.data]);
       setNewGenre({ name: "" });
       setShowForm(false);
     } catch (err: unknown) {

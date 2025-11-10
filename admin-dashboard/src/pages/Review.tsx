@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import callApi from "../api/api";
 
 interface Review {
   _id: string;
@@ -30,7 +31,6 @@ export default function Reviews() {
     rating: 0,
     comment: "",
   });
-  const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
 
   const navigate = useNavigate();
@@ -46,12 +46,10 @@ export default function Reviews() {
           return;
         }
 
-        const res = await axios.get(`${apiUrl}/review/all`, {
-          headers: { Authorization: `bearer ${token}` },
-        });
+        const res = await callApi('/review/all', token, 'GET');
 
         // on récupère directement les objets peuplés (game + user)
-        setReviews(Array.isArray(res.data.review) ? res.data.review : []);
+        setReviews(Array.isArray(res.review) ? res.review : []);
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
           setError(err.response?.data?.message || "Erreur lors du chargement des reviews.");
@@ -71,10 +69,9 @@ export default function Reviews() {
           setLoading(false);
           return;
         }
-        const res = await axios.get(`${apiUrl}/game/all`, {
-          headers: { Authorization: `bearer ${token}` },
-        });
-        setGame(Array.isArray(res.data.games) ? res.data.games : []);
+
+        const res = await callApi('/game/all', token, 'GET');
+        setGame(Array.isArray(res.games) ? res.games : []);
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
           setError(err.response?.data?.message || "Erreur lors du chargement des jeux.");
@@ -95,18 +92,13 @@ export default function Reviews() {
       const token = localStorage.getItem("token");
       if (!token) return alert("Token manquant.");
 
-      const res = await axios.post(
-        `${apiUrl}/review/new`,
-        {
-          user: newReview.user,
-          game: newReview.game,
-          rating: newReview.rating,
-          comment: newReview.comment,
-        },
-        {
-          headers: { Authorization: `bearer ${token}` },
-        }
-      );
+
+      const res = await callApi('/review/new', token, 'POST', {
+        user: newReview.user,
+        game: newReview.game,
+        rating: newReview.rating,
+        comment: newReview.comment,
+      });
 
       setReviews((prev) => [...prev, res.data.review]);
       setNewReview({ user: "", game: "", rating: 0, comment: "" });

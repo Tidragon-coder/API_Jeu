@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Card from "../components/molecules/Card";
-
-const apiUrl = import.meta.env.VITE_API_URL || '/api';
+import callApi  from "../api/api";
 
 export default function Dashboard() {
   const [totalUsers, setTotalUsers] = useState<number>(0);
@@ -24,24 +23,16 @@ export default function Dashboard() {
         }
 
         const [usersRes, gamesRes, reviewsRes, genresRes] = await Promise.all([
-          axios.get(`${apiUrl}/users/`, {
-            headers: { Authorization: `bearer ${token}` },
-          }),
-          axios.get(`${apiUrl}/game/all`, {
-            headers: { Authorization: `bearer ${token}` },
-          }),
-          axios.get(`${apiUrl}/review/all`, {
-            headers: { Authorization: `bearer ${token}` },
-          }),
-          axios.get(`${apiUrl}/genre/all`, {
-            headers: { Authorization: `bearer ${token}` },
-          }),
+          callApi('/users/', token, 'GET'),
+          callApi('/game/all', token, 'GET'),
+          callApi('/review/all', token, 'GET'),
+          callApi('/genre/all', token, 'GET'),
         ]);
 
-        setTotalUsers(usersRes.data.users?.length || 0);
-        setTotalGames(gamesRes.data.games?.length || 0);
-        setTotalReviews(reviewsRes.data.reviews?.length || 0);
-        setTotalGenres(genresRes.data.genres?.length || 0);
+        setTotalUsers(usersRes.users?.length || 0);
+        setTotalGames(gamesRes.games?.length || 0);
+        setTotalReviews(reviewsRes.review?.length || 0);
+        setTotalGenres(genresRes.genres?.length || 0);
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
           setError(err.response?.data?.message || "Erreur lors du chargement du tableau de bord.");
@@ -52,10 +43,8 @@ export default function Dashboard() {
         setLoading(false);
       }
     };
-
     fetchDashboardData();
   }, []);
-
   if (loading) return <p className="text-center mt-8 text-gray-600">Chargement...</p>;
   if (error) return <p className="text-center mt-8 text-red-500">{error}</p>;
 
@@ -68,3 +57,4 @@ export default function Dashboard() {
     </div>
   );
 }
+

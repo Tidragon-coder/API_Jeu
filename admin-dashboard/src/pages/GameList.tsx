@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
-const apiUrl = import.meta.env.VITE_API_URL || '/api';
+import callApi  from "../api/api";
 
 interface Game {
   _id: string;
@@ -38,11 +37,9 @@ export default function GameListPage() {
         return;
       }
 
-      const res = await axios.get(`${apiUrl}/gamelist/all`, {
-        headers: { Authorization: `bearer ${token}` },
-      });
+      const res = await callApi('/gamelist/all', token, 'GET');
 
-      setGameList(Array.isArray(res.data.gamelist) ? res.data.gamelist : []);
+      setGameList(Array.isArray(res.gamelist) ? res.gamelist : []);
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.message || "Erreur lors du chargement des listes de jeux.");
@@ -58,10 +55,11 @@ export default function GameListPage() {
   const fetchGames = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get(`${apiUrl}/game/all`, {
-        headers: { Authorization: `bearer ${token}` },
-      });
-      setGames(Array.isArray(res.data.games) ? res.data.games : []);
+      if (!token) return alert("Token manquant.");
+      
+      const res = await callApi('/game/all', token, 'GET');
+      setGames(Array.isArray(res.games) ? res.games : []);
+
     } catch (err) {
       console.error("Erreur lors du chargement des jeux :", err);
     }
@@ -74,17 +72,16 @@ export default function GameListPage() {
       const token = localStorage.getItem("token");
       if (!token) return alert("Token manquant.");
 
-      const res = await axios.post(
-        `${apiUrl}/gamelist/new`,
-        newGameList,
-        {
-          headers: { Authorization: `bearer ${token}` },
-        }
-      );
+      const res = await callApi('/gamelist/new', token, 'POST', {
+        user: newGameList.user,
+        game: newGameList.game,
+        status: newGameList.status,
+      });
 
-      setGameList((prev) => [...prev, res.data.gamelist || res.data]);
+      setGameList((prev) => [...prev, res.gamelist || res.data]);
       setNewGameList({ user: "", game: "", status: "Pending" });
       setShowForm(false);
+      
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.message || "Erreur lors de la création de la GameList.");
