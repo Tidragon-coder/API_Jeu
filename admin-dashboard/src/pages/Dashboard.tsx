@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Card from "../components/Card";
+import Card from "../components/molecules/Card";
 
 const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
