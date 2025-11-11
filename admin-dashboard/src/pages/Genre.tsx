@@ -2,12 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import callApi from "../api/api";
 import Error from "../components/molecules/401";
-import type { ErrorState } from "../types/error";
 
-interface Genre {
-  _id: string;
-  name: string;
-}
+import type { ErrorState } from "../types/error";
+import type { Genre } from "../types/genre";
 
 export default function Genres() {
   const [genres, setGenres] = useState<Genre[]>([]);

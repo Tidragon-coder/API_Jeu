@@ -2,18 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import callApi from "../api/api";
 import Error from "../components/molecules/401";
-import type { ErrorState } from "../types/error";
 
-interface Game {
-  _id: string;
-  title: string;
-  description?: string;
-  release_year?: number;
-  genre: {
-    _id: string;
-    name: string;
-  } | string;
-}
+import type { ErrorState } from "../types/error";
+import type { Game } from "../types/game";
 
 export default function Games() {
   const [games, setGames] = useState<Game[]>([]);

@@ -2,16 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import callApi from "../api/api";
 import Error from "../components/molecules/401";
-import type { ErrorState } from "../types/error";
 
-interface User {
-  _id: string;
-  name: string;
-  nickname?: string;
-  email: string;
-  role: string;
-  createdAt: string;
-}
+import type { ErrorState } from "../types/error";
+import type { User } from "../types/user";
 
 export default function Users() {
   const [users, setUsers] = useState<User[]>([]);

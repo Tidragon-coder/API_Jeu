@@ -3,22 +3,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import callApi from "../api/api";
 import Error from "../components/molecules/401";
-import type { ErrorState } from "../types/error";
 
-interface Review {
-  _id: string;
-  user: {
-    _id: string;
-    username?: string;
-    email?: string;
-  };
-  game: {
-    _id: string;
-    title: string;
-  };
-  rating: number;
-  comment?: string;
-}
+import type { ErrorState } from "../types/error";
+import type { Review } from "../types/review";
 
 export default function Reviews() {
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -223,7 +210,7 @@ export default function Reviews() {
               <tr key={r._id} className="hover:bg-gray-50 transition-colors duration-150">
                 <td className="px-6 py-4 text-sm text-gray-700">{r._id}</td>
                 <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                  {r.user?.username || r.user?.email || r.user?._id}
+                  {r.user?.nickname || r.user?.email || r.user?._id}
                 </td>
                 <td className="px-6 py-4 text-sm font-medium text-gray-900">
                   {r.game?.title || r.game?._id}

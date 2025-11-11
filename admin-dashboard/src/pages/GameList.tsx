@@ -2,19 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import callApi from "../api/api";
 import Error from "../components/molecules/401";
+
 import type { ErrorState } from "../types/error";
-
-interface Game {
-  _id: string;
-  title: string;
-}
-
-interface GameList {
-  _id: string;
-  user: string;
-  game: Game;
-  status: string;
-}
+import type { GameList } from "../types/gameList";
+import type { Game } from "../types/game";
 
 export default function GameListPage() {
   const [gameList, setGameList] = useState<GameList[]>([]);
@@ -229,3 +220,4 @@ export default function GameListPage() {
     </div>
   );
 }
+
