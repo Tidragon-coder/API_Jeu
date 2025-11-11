@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Card from "../components/molecules/Card";
 import callApi from "../api/api";
-import Error from "../components/molecules/401";
+import Error from "../components/molecules/Error";
 import type { ErrorState } from "../types/error";
 
 export default function Dashboard() {
