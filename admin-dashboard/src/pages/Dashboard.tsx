@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Card from "../components/molecules/Card";
-import callApi  from "../api/api";
+import callApi from "../api/api";
+import Error from "../components/molecules/401";
+import type { ErrorState } from "../types/error";
 
 export default function Dashboard() {
   const [totalUsers, setTotalUsers] = useState<number>(0);
@@ -9,7 +11,7 @@ export default function Dashboard() {
   const [totalReviews, setTotalReviews] = useState<number>(0);
   const [totalGenres, setTotalGenres] = useState<number>(0);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<ErrorState>({ code: 0, message: "" });
 
 
   useEffect(() => {
@@ -17,7 +19,7 @@ export default function Dashboard() {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
-          setError("Aucun token trouvé. Veuillez vous reconnecter.");
+          setError({ code: 401, message: "Aucun token trouvé. Veuillez vous reconnecter." });
           setLoading(false);
           return;
         }
@@ -33,11 +35,14 @@ export default function Dashboard() {
         setTotalGames(gamesRes.games?.length || 0);
         setTotalReviews(reviewsRes.review?.length || 0);
         setTotalGenres(genresRes.genres?.length || 0);
-      } catch (err: unknown) {
+      } catch (err) {
         if (axios.isAxiosError(err)) {
-          setError(err.response?.data?.message || "Erreur lors du chargement du tableau de bord.");
+          setError({
+            code: err.response?.status || 500,
+            message: err.response?.data?.message || "Erreur lors du chargement du tableau de bord.",
+          });
         } else {
-          setError("Erreur inconnue.");
+          setError({ code: 500, message: "Erreur inconnue." });
         }
       } finally {
         setLoading(false);
@@ -46,7 +51,7 @@ export default function Dashboard() {
     fetchDashboardData();
   }, []);
   if (loading) return <p className="text-center mt-8 text-gray-600">Chargement...</p>;
-  if (error) return <p className="text-center mt-8 text-red-500">{error}</p>;
+  if (error.code) return <div className="flex justify-center mt-8"> <Error number={error.code} message={error.message} /> </div>;
 
   return (
     <div className="p-6 grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
@@ -57,4 +62,3 @@ export default function Dashboard() {
     </div>
   );
 }
-

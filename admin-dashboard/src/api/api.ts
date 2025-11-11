@@ -24,7 +24,7 @@ export default async function apiRequest(endpoint: string, token: string, method
     } catch (error: any) {
         if(error.response){
             console.error(`Erreur API [${error.response.status}]: `, error.response.data)
-            throw error.response
+            throw error
         } else {
             console.error(`Erreur reseau ou serveur:`, error.message);
             throw error

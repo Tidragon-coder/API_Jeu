@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import callApi from "../api/api";
+import Error from "../components/molecules/401";
+import type { ErrorState } from "../types/error";
 
 interface Game {
   _id: string;
@@ -17,7 +19,7 @@ export default function Games() {
   const [games, setGames] = useState<Game[]>([]);
   const [genres, setGenres] = useState<{ _id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<ErrorState>({ code: 0, message: "" });
 
   const [showForm, setShowForm] = useState(false);
   const [newGame, setNewGame] = useState({
@@ -31,19 +33,21 @@ export default function Games() {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        setError("Aucun token trouvé. Veuillez vous reconnecter.");
+        setError({ code: 401, message: "Aucun token trouvé. Veuillez vous reconnecter." });
         setLoading(false);
         return;
       }
 
-      const res = await callApi('/game/all', token, 'GET');
-
+      const res = await callApi("/game/all", token, "GET");
       setGames(Array.isArray(res.games) ? res.games : []);
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        setError(err.response?.data?.message || "Erreur lors du chargement des jeux.");
+        setError({
+          code: err.response?.status || 500,
+          message: err.response?.data?.message || "Erreur lors du chargement des jeux.",
+        });
       } else {
-        setError("Erreur inconnue.");
+        setError({ code: 500, message: "Erreur inconnue." });
       }
     } finally {
       setLoading(false);
@@ -54,19 +58,21 @@ export default function Games() {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        setError("Aucun token trouvé. Veuillez vous reconnecter.");
+        setError({ code: 401, message: "Aucun token trouvé. Veuillez vous reconnecter." });
         setLoading(false);
         return;
       }
 
-      const res = await callApi('/genre/all', token, 'GET');
+      const res = await callApi("/genre/all", token, "GET");
       setGenres(Array.isArray(res.genres) ? res.genres : []);
-
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        setError(err.response?.data?.message || "Erreur lors du chargement des genres.");
+        setError({
+          code: err.response?.status || 500,
+          message: err.response?.data?.message || "Erreur lors du chargement des genres.",
+        });
       } else {
-        setError("Erreur inconnue.");
+        setError({ code: 500, message: "Erreur inconnue." });
       }
     }
   };
@@ -80,9 +86,9 @@ export default function Games() {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      if (!token) return alert("Token manquant.");
+      if (!token) return setError({ code: 401, message: "Token manquant." });
 
-      const res = await callApi('/game/new', token, 'POST', {
+      const res = await callApi("/game/new", token, "POST", {
         title: newGame.title,
         description: newGame.description,
         release_year: Number(newGame.release_year),
@@ -94,17 +100,25 @@ export default function Games() {
       setShowForm(false);
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        setError(err.response?.data?.message || "Erreur lors de l’ajout du jeu.");
+        setError({
+          code: err.response?.status || 500,
+          message: err.response?.data?.message || "Erreur lors de l’ajout du jeu.",
+        });
       } else {
-        setError("Erreur inconnue.");
+        setError({ code: 500, message: "Erreur inconnue." });
       }
     }
   };
 
   if (loading)
     return <p className="text-center mt-8 text-gray-600">Chargement des jeux...</p>;
-  if (error)
-    return <p className="text-center mt-8 text-red-500">{error}</p>;
+
+  if (error.code)
+    return (
+      <div className="flex justify-center mt-8">
+        <Error number={error.code} message={error.message} />
+      </div>
+    );
 
   return (
     <div className="px-6 py-4">

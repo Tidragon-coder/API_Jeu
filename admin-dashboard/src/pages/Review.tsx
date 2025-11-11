@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import callApi from "../api/api";
+import Error from "../components/molecules/401";
+import type { ErrorState } from "../types/error";
 
 interface Review {
   _id: string;
@@ -20,9 +22,9 @@ interface Review {
 
 export default function Reviews() {
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [game, setGame] = useState<{ _id: string; title: string }[]>([]);
+  const [games, setGames] = useState<{ _id: string; title: string }[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<ErrorState>({ code: 0, message: "" });
 
   const [showForm, setShowForm] = useState(false);
   const [newReview, setNewReview] = useState({
@@ -32,29 +34,28 @@ export default function Reviews() {
     comment: "",
   });
 
-
   const navigate = useNavigate();
-
 
   useEffect(() => {
     const fetchReviews = async () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
-          setError("Aucun token trouvé. Veuillez vous reconnecter.");
+          setError({ code: 401, message: "Aucun token trouvé. Veuillez vous reconnecter." });
           setLoading(false);
           return;
         }
 
-        const res = await callApi('/review/all', token, 'GET');
-
-        // on récupère directement les objets peuplés (game + user)
+        const res = await callApi("/review/all", token, "GET");
         setReviews(Array.isArray(res.review) ? res.review : []);
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
-          setError(err.response?.data?.message || "Erreur lors du chargement des reviews.");
+          setError({
+            code: err.response?.status || 500,
+            message: err.response?.data?.message || "Erreur lors du chargement des reviews.",
+          });
         } else {
-          setError("Erreur inconnue.");
+          setError({ code: 500, message: "Erreur inconnue." });
         }
       } finally {
         setLoading(false);
@@ -63,26 +64,28 @@ export default function Reviews() {
 
     const fetchGames = async () => {
       try {
-        const token = localStorage.getItem("token"); 
+        const token = localStorage.getItem("token");
         if (!token) {
-          setError("Aucun token trouvé. Veuillez vous reconnecter.");
+          setError({ code: 401, message: "Aucun token trouvé. Veuillez vous reconnecter." });
           setLoading(false);
           return;
         }
 
-        const res = await callApi('/game/all', token, 'GET');
-        setGame(Array.isArray(res.games) ? res.games : []);
+        const res = await callApi("/game/all", token, "GET");
+        setGames(Array.isArray(res.games) ? res.games : []);
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
-          setError(err.response?.data?.message || "Erreur lors du chargement des jeux.");
+          setError({
+            code: err.response?.status || 500,
+            message: err.response?.data?.message || "Erreur lors du chargement des jeux.",
+          });
         } else {
-          setError("Erreur inconnue.");
+          setError({ code: 500, message: "Erreur inconnue." });
         }
       }
     };
 
     fetchGames();
-
     fetchReviews();
   }, []);
 
@@ -90,10 +93,9 @@ export default function Reviews() {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      if (!token) return alert("Token manquant.");
+      if (!token) return setError({ code: 401, message: "Token manquant." });
 
-
-      const res = await callApi('/review/new', token, 'POST', {
+      const res = await callApi("/review/new", token, "POST", {
         user: newReview.user,
         game: newReview.game,
         rating: newReview.rating,
@@ -106,9 +108,12 @@ export default function Reviews() {
       navigate("/reviews");
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        setError(err.response?.data?.message || "Erreur lors de la création de l’avis.");
+        setError({
+          code: err.response?.status || 500,
+          message: err.response?.data?.message || "Erreur lors de la création de l’avis.",
+        });
       } else {
-        setError("Erreur inconnune.");
+        setError({ code: 500, message: "Erreur inconnue." });
       }
     }
   };
@@ -116,8 +121,12 @@ export default function Reviews() {
   if (loading)
     return <p className="text-center mt-8 text-gray-600">Chargement des reviews...</p>;
 
-  if (error)
-    return <p className="text-center mt-8 text-red-500">{error}</p>;
+  if (error.code)
+    return (
+      <div className="flex justify-center mt-8">
+        <Error number={error.code} message={error.message} />
+      </div>
+    );
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
@@ -146,13 +155,13 @@ export default function Reviews() {
             />
             <select
               value={newReview.game}
-              onChange={(e) =>
-                setNewReview({ ...newReview, game: e.target.value })
-              }
+              onChange={(e) => setNewReview({ ...newReview, game: e.target.value })}
               className="border p-2 rounded"
             >
-              <option value="" selected >Sélectionnez un jeu</option>
-              {game.map((g) => (
+              <option value="" selected>
+                Sélectionnez un jeu
+              </option>
+              {games.map((g) => (
                 <option key={g._id} value={g._id}>
                   {g.title || g._id}
                 </option>
@@ -165,9 +174,7 @@ export default function Reviews() {
               max={5}
               placeholder="Rating"
               value={newReview.rating}
-              onChange={(e) =>
-                setNewReview({ ...newReview, rating: Number(e.target.value) })
-              }
+              onChange={(e) => setNewReview({ ...newReview, rating: Number(e.target.value) })}
               required
               className="border p-2 rounded"
             />
@@ -175,9 +182,7 @@ export default function Reviews() {
               type="text"
               placeholder="Votre commentaire"
               value={newReview.comment}
-              onChange={(e) =>
-                setNewReview({ ...newReview, comment: e.target.value })
-              }
+              onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
               required
               className="border p-2 rounded"
             />
@@ -225,14 +230,16 @@ export default function Reviews() {
                 </td>
                 <td
                   className={`px-6 py-4 text-sm font-medium ${
-                    r.rating >= 4 ?  "text-green-600" : r.rating <=2 ? "text-red-600" : "text-yellow-600"
+                    r.rating >= 4
+                      ? "text-green-600"
+                      : r.rating <= 2
+                      ? "text-red-600"
+                      : "text-yellow-600"
                   }`}
                 >
-                  {r.rating <= 2 ? r.rating+" ❌" : r.rating == 3 ? r.rating+" ⚠️" : r.rating+" ✅" }
+                  {r.rating <= 2 ? r.rating + " ❌" : r.rating == 3 ? r.rating + " ⚠️" : r.rating + " ✅"}
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-500">
-                  {r.comment || "—"}
-                </td>
+                <td className="px-6 py-4 text-sm text-gray-500">{r.comment || "—"}</td>
               </tr>
             ))}
           </tbody>
@@ -241,5 +248,3 @@ export default function Reviews() {
     </div>
   );
 }
-
-

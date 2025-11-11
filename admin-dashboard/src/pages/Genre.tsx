@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import callApi from "../api/api";
+import Error from "../components/molecules/401";
+import type { ErrorState } from "../types/error";
 
 interface Genre {
   _id: string;
@@ -10,68 +12,73 @@ interface Genre {
 export default function Genres() {
   const [genres, setGenres] = useState<Genre[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<ErrorState>({ code: 0, message: "" });
 
   const [showForm, setShowForm] = useState(false);
-  const [newGenre, setNewGenre] = useState({
-    name: "",
-  });
+  const [newGenre, setNewGenre] = useState({ name: "" });
 
   // Charger les genres existants
-  useEffect(() => {
-    const fetchGenres = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          setError("Aucun token trouvé. Veuillez vous reconnecter.");
-          setLoading(false);
-          return;
-        }
-
-        const data = await callApi('/genre/all', token, 'GET');
-        setGenres(data.genres || data);
-
-      } catch (err: unknown) {
-        if (axios.isAxiosError(err)) {
-          setError(err.response?.data?.message || "Erreur lors du chargement des genres.");
-        } else {
-          setError("Erreur inconnue.");
-        }
-      } finally {
+  const fetchGenres = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setError({ code: 401, message: "Aucun token trouvé. Veuillez vous reconnecter." });
         setLoading(false);
+        return;
       }
-    };
 
-    fetchGenres();
-  }, []);
+      const data = await callApi("/genre/all", token, "GET");
+      setGenres(Array.isArray(data.genres) ? data.genres : data);
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        setError({
+          code: err.response?.status || 500,
+          message: err.response?.data?.message || "Erreur lors du chargement des genres.",
+        });
+      } else {
+        setError({ code: 500, message: "Erreur inconnue." });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Ajouter un nouveau genre
   const handleAddGenre = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      if (!token) return alert("Token manquant.");
+      if (!token) return setError({ code: 401, message: "Token manquant." });
 
-      const res = await callApi('/genre/new', token, 'POST', { name: newGenre.name });
-
-      // ajout du genre dans la liste locale
+      const res = await callApi("/genre/new", token, "POST", { name: newGenre.name });
       setGenres((prev) => [...prev, res.genre || res.data]);
       setNewGenre({ name: "" });
       setShowForm(false);
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        setError(err.response?.data?.message || "Erreur lors de la création du genre.");
+        setError({
+          code: err.response?.status || 500,
+          message: err.response?.data?.message || "Erreur lors de la création du genre.",
+        });
       } else {
-        setError("Erreur inconnue.");
+        setError({ code: 500, message: "Erreur inconnue." });
       }
     }
   };
 
+  useEffect(() => {
+    fetchGenres();
+  }, []);
+
   if (loading)
     return <p className="text-center mt-8 text-gray-600">Chargement des genres...</p>;
 
-  if (error)
-    return <p className="text-center mt-8 text-red-500">{error}</p>;
+  if (error.code)
+    return (
+      <div className="flex justify-center mt-8">
+        <Error number={error.code} message={error.message} />
+      </div>
+    );
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
@@ -137,4 +144,3 @@ export default function Genres() {
     </div>
   );
 }
-
