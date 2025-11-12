@@ -61,7 +61,7 @@ export default function Users() {
         password: newUser.password,
       });
 
-      setUsers((prev) => [...prev, res.data.user]);
+      setUsers((prev) => [...prev, res.user]);
       setNewUser({ name: "", nickname: "", email: "", password: "" });
       setShowForm(false);
     } catch (err: unknown) {

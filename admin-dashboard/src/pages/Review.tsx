@@ -89,7 +89,7 @@ export default function Reviews() {
         comment: newReview.comment,
       });
 
-      setReviews((prev) => [...prev, res.data.review]);
+      setReviews((prev) => [...prev, res.review]);
       setNewReview({ user: "", game: "", rating: 0, comment: "" });
       setShowForm(false);
       navigate("/reviews");

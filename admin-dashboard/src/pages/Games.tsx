@@ -5,20 +5,16 @@ import Error from "../components/molecules/Error";
 
 import type { ErrorState } from "../types/error";
 import type { Game } from "../types/game";
+import type { Genre } from "../types/genre";
 
 export default function Games() {
   const [games, setGames] = useState<Game[]>([]);
-  const [genres, setGenres] = useState<{ _id: string; name: string }[]>([]);
+  const [genres, setGenres] = useState<Genre[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<ErrorState>({ code: 0, message: "" });
 
   const [showForm, setShowForm] = useState(false);
-  const [newGame, setNewGame] = useState({
-    title: "",
-    description: "",
-    release_year: "",
-    genre: "",
-  });
+  const [newGame, setNewGame] = useState({ title: "", description: "", release_year: "", genre: "" });
 
   const fetchGames = async () => {
     try {
@@ -164,7 +160,7 @@ export default function Games() {
                 />
                 <label htmlFor={g._id}>{g.name}</label>
               </div>
-            )) }
+            ))}
 
           </div>
           <button
@@ -191,7 +187,7 @@ export default function Games() {
               <td className="p-3 text-sm text-gray-700">{g._id}</td>
               <td className="p-3 text-sm font-medium text-gray-900">{g.title}</td>
               <td className="p-3 text-sm text-gray-700">
-                {typeof g.genre === "object" ? g.genre.name : g.genre}
+                {g.genre && typeof g.genre === "object" ? g.genre.name : typeof g.genre === "string" ? g.genre : "—"}
               </td>
               <td className="p-3 text-sm font-medium text-gray-900">{g.release_year || "—"}</td>
             </tr>
