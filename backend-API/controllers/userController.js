@@ -37,6 +37,10 @@ exports.loginUser = async (req, res) => {
         if (!isMatch) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
+
+        user.lastLogin = new Date();
+        await user.save();
+
         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_expiresIn });
         res.status(200).json({ user, token, message: 'User logged in successfully' });
     } catch (error) {
@@ -53,8 +57,8 @@ exports.logoutUser = async (req, res) => {
 }
 
 exports.createUser = async (req, res) => {
-    try{
-        const { name, nickname, email, password} = req.body;
+    try {
+        const { name, nickname, email, password } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = (await User.create({ name, nickname, email, password: hashedPassword }));
 
@@ -65,7 +69,7 @@ exports.createUser = async (req, res) => {
 }
 
 exports.updateUser = async (req, res) => {
-    try{
+    try {
         const update = { ...req.body };
         if (update.password) {
             update.password = await bcrypt.hash(update.password, 10);
@@ -82,7 +86,7 @@ exports.updateUser = async (req, res) => {
 }
 
 exports.deleteUser = async (req, res) => {
-    try{
+    try {
         const users = await User.findByIdAndDelete(req.params.id);
         if (!users) {
             return res.status(404).json({ message: 'User not found' });

@@ -165,6 +165,9 @@ export default function Users() {
                 Rôle
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                last login
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Date création
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -188,6 +191,15 @@ export default function Users() {
                   >
                     {user.role}
                   </span>
+                </td>
+                <td className="px-6 py-4 text-sm text-gray-500">
+                  {user.lastLogin ? (
+                    <span className="text-sm text-gray-500">
+                      {new Date(user.lastLogin).toLocaleDateString()}
+                    </span>
+                  ) : (
+                    <span className="text-sm text-gray-500">Aucun login</span>
+                  )}
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-500">
                   {new Date(user.createdAt).toLocaleDateString()}
