@@ -201,7 +201,7 @@ export default function SideBarUser({ user, onClose }: SideBarUserProps) {
                                     {/* Mot de passe */}
                                     <div className="flex flex-col">
                                         <label className="text-sm text-gray-700 font-medium mb-1">
-                                            Mot de passe
+                                            Changer le mot de passe
                                         </label>
                                         <input
                                             type="password"

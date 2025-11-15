@@ -174,6 +174,9 @@ export default function Users() {
                 Nom
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Nickname
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Email
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -196,6 +199,7 @@ export default function Users() {
               <tr key={user._id} className="hover:bg-gray-50 transition-colors duration-150">
                 <td className="px-6 py-4 text-sm text-gray-500">{user._id}</td>
                 <td className="px-6 py-4 text-sm font-medium text-gray-900">{user.name}</td>
+                <td className="px-6 py-4 text-sm text-gray-500">{user.nickname}</td>
                 <td className="px-6 py-4 text-sm text-gray-500">{user.email}</td>
                 <td className="px-6 py-4 text-sm">
                   <span

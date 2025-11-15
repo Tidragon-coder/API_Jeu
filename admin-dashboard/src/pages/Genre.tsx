@@ -63,17 +63,17 @@ export default function Genres() {
     }
   };
 
-  const handleAdminGenre = async (id: string, action: "delete" | "update") => {
+  const handleAdminGenre = async (id: string, action: "delete" | "update", name: string) => {
     try {
       const token = localStorage.getItem("token");
       if (!token) return setError({ code: 401, message: "Token manquant." });
 
       if (action === "delete"){
-        if (!window.confirm("Etes-vous sur de vouloir supprimer ce genre ?")) return;
+        if (!window.confirm(`Etes-vous sur de vouloir supprimer le genre ${name} ?`)) return;
       }
 
       if (action === "update"){
-        if (!window.confirm("Etes-vous sur de vouloir moodifier ce genre ?")) return;
+        if (!window.confirm(`Etes-vous sur de vouloir modif le genre ${name} ?`)) return;
       }
 
       if (action === "delete") await callApi(`/genre/${id}`, token, "DELETE");
@@ -166,10 +166,10 @@ export default function Genres() {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{g._id}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{g.name}</td>
                 <td className="px-6 py-4 text-sm text-gray-500 flex space-x-4">
-                  <a href="#" onClick={() => handleAdminGenre(g._id, "update")}>
+                  <a href="#" onClick={() => handleAdminGenre(g._id, "update", g.name)}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#b89007" stroke-width="1.5" d="m14.36 4.079l.927-.927a3.932 3.932 0 0 1 5.561 5.561l-.927.927m-5.56-5.561s.115 1.97 1.853 3.707C17.952 9.524 19.92 9.64 19.92 9.64m-5.56-5.561l-8.522 8.52c-.577.578-.866.867-1.114 1.185a6.6 6.6 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.094 3.281m17.6-10.162L11.4 18.16c-.577.577-.866.866-1.184 1.114a6.6 6.6 0 0 1-1.211.749c-.364.173-.751.302-1.526.56l-3.281 1.094m0 0l-.802.268a1.06 1.06 0 0 1-1.342-1.342l.268-.802m1.876 1.876l-1.876-1.876" /></svg>
                   </a>
-                  <a href="#"  onClick={() => handleAdminGenre(g._id, "delete")}>
+                  <a href="#"  onClick={() => handleAdminGenre(g._id, "delete", g.name)}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#d80808" d="M7 21q-.825 0-1.412-.587T5 19V6q-.425 0-.712-.288T4 5t.288-.712T5 4h4q0-.425.288-.712T10 3h4q.425 0 .713.288T15 4h4q.425 0 .713.288T20 5t-.288.713T19 6v13q0 .825-.587 1.413T17 21zM17 6H7v13h10zm-7 11q.425 0 .713-.288T11 16V9q0-.425-.288-.712T10 8t-.712.288T9 9v7q0 .425.288.713T10 17m4 0q.425 0 .713-.288T15 16V9q0-.425-.288-.712T14 8t-.712.288T13 9v7q0 .425.288.713T14 17M7 6v13z" /></svg>
                   </a>
                 </td>
