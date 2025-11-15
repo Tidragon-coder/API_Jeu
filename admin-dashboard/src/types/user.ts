@@ -1,9 +1,11 @@
 export interface User {
-    _id: string;
+    _id: UserId;
     name: string;
     nickname?: string;
     email: string;
     role: string;
-    lastLogin: Date;
+    lastLogin: string;
     createdAt: string;
 }
+
+export type UserId = string; 
