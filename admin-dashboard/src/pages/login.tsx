@@ -21,6 +21,7 @@ const Login = () => {
 
       // ✅ Sauvegarde du token
       localStorage.setItem("token", token);
+      localStorage.setItem("id", res.user._id);
 
       // ✅ Message de succès
       setMessage(message || "Connexion réussie ✅");

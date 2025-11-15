@@ -25,6 +25,8 @@ export default function SideBarUser({ user, onClose }: SideBarUserProps) {
         password: "",
     });
 
+    const sessionUserID = localStorage.getItem("id");
+
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -36,11 +38,9 @@ export default function SideBarUser({ user, onClose }: SideBarUserProps) {
 
                 const res = await callApi(`/users/${user}`, token, "GET");
                 setUserData(res.users);
-                setPutUser({name: res.users.name, nickname: res.users.nickname, email: res.users.email, role: res.users.role, password: ""});
-                console.log("UserData", res.users);
-                console.log("PutUser", putUser);
+                setPutUser({ name: res.users.name, nickname: res.users.nickname, email: res.users.email, role: res.users.role, password: "" });
             } catch (err) {
-                console.log(err);
+                (err);
                 setError({ code: 500, message: "Erreur lors du chargement utilisateur." });
             }
         };
@@ -55,7 +55,7 @@ export default function SideBarUser({ user, onClose }: SideBarUserProps) {
             const token = localStorage.getItem("token");
             if (!token) return setError({ code: 401, message: "Token manquant." });
 
-            const preloading: any ={name: putUser.name, nickname: putUser.nickname, email: putUser.email, role: putUser.role};
+            const preloading: any = { name: putUser.name, nickname: putUser.nickname, email: putUser.email, role: putUser.role };
 
             if (putUser.password) preloading.password = putUser.password;
 
@@ -76,7 +76,7 @@ export default function SideBarUser({ user, onClose }: SideBarUserProps) {
             }
         }
     };
-
+    console.log(sessionUserID, user)
     if (error.code)
         return (
             <div className="flex justify-center mt-8">
@@ -114,6 +114,13 @@ export default function SideBarUser({ user, onClose }: SideBarUserProps) {
                             <span className="block font-mono text-gray-800 text-md mt-1">
                                 {user}
                             </span>
+                            {sessionUserID === user ? (
+                                <p className="text-red-600">Votre profil !</p>
+                            ): 
+                            (
+                                <p className="text-green-600">Le profil de : "{userData.name}"</p>
+                            )
+                            }
                         </p>
 
                         <div className="space-y-6">
@@ -173,15 +180,22 @@ export default function SideBarUser({ user, onClose }: SideBarUserProps) {
                                         <label className="text-sm text-gray-700 font-medium mb-1 text-red-700">
                                             Role ⚠️
                                         </label>
-                                        <select
-                                            defaultValue={userData.role}
-                                            value={putUser.role}
-                                            onChange={(e) => setPutUser({ ...putUser, role: e.target.value })}
-                                            required
-                                            className="border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4F7C77]">
-                                            <option value="admin" className="bg-red-700">Admin</option>
-                                            <option value="user">User</option>
-                                        </select>
+                                        {sessionUserID === user ? (
+                                            <p className="text-sm text-gray-700 font-medium mb-1">
+                                                Vous ne pouvez pas modifier votre role
+                                            </p>
+                                        ) : (
+                                            <select
+                                                defaultValue={userData.role}
+                                                value={putUser.role}
+                                                onChange={(e) => setPutUser({ ...putUser, role: e.target.value })}
+                                                required
+                                                className="border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4F7C77]"
+                                            >
+                                                <option value="admin" className="bg-red-700">Admin</option>
+                                                <option value="user">User</option>
+                                            </select>
+                                        )}
                                     </div>
 
                                     {/* Mot de passe */}
