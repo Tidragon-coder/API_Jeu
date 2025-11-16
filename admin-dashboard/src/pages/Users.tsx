@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import callApi from "../api/api";
 import Error from "../components/molecules/Error";
+import { useNotification } from "../context/NotificationContext";
 
 import SideBarUser from "../components/organisme/SideBarUser";
 
@@ -9,6 +10,7 @@ import type { ErrorState } from "../types/error";
 import type { User, UserId } from "../types/user";
 
 export default function Users() {
+  const { notify } = useNotification();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<ErrorState>({ code: 0, message: "" });
@@ -67,15 +69,13 @@ export default function Users() {
 
       setUsers((prev) => [...prev, res.user]);
       setNewUser({ name: "", nickname: "", email: "", password: "" });
+      notify("Utilisateur ajouté.", "success");
       setShowForm(false);
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        setError({
-          code: err.response?.status || 500,
-          message: err.response?.data?.message || "Erreur lors de la création de l’utilisateur.",
-        });
+        notify(err.response?.data?.message || "Erreur lors de l'ajout de l'utilisateur.", "error");
       } else {
-        setError({ code: 500, message: "Erreur inconnue." });
+        notify("Une erreur inattendue est survenue", "error");
       }
     }
   };

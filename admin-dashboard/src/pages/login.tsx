@@ -1,38 +1,39 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useNotification } from "../context/NotificationContext";
+
 import callApi from "../api/api";
 
 const Login = () => {
+  const { notify } = useNotification();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState<string | null>(null);
   const navigate = useNavigate();
 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setMessage(null);
 
     try {
 
-      const res = await callApi('/users/login', '', 'POST', {email, password});
-      const { token, message } = res;
+      const res = await callApi('/users/login', '', 'POST', { email, password });
+      const { token } = res;
 
       // ✅ Sauvegarde du token
       localStorage.setItem("token", token);
       localStorage.setItem("id", res.user._id);
 
-      // ✅ Message de succès
-      setMessage(message || "Connexion réussie ✅");
+      notify("connexion reussie ", "success");
 
       navigate("/dashboard");
-      
+
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        setMessage(err.response?.data?.message || "Erreur de connexion ❌");
+        notify(err.response?.data?.message || "Erreur de connexion ❌", "error");
       } else {
-        setMessage("Une erreur inattendue est survenue ❌");
+        notify("Une erreur inattendue est survenue ❌", "error");
       }
     }
   };
@@ -69,17 +70,7 @@ const Login = () => {
         >
           Se connecter
         </button>
-        <button  className="w-full bg-red-600 hover:bg-blue-700 p-2 rounded font-semibold transition-colors mt-4" onClick={() => navigate("/register")}>Creer un compte</button>
-
-        {message && (
-          <p
-            className={`mt-4 text-center ${
-              message.includes("✅") ? "text-green-400" : "text-red-400"
-            }`}
-          >
-            {message}
-          </p>
-        )}
+        <button className="w-full bg-red-600 hover:bg-blue-700 p-2 rounded font-semibold transition-colors mt-4" onClick={() => navigate("/register")}>Creer un compte</button>
       </form>
     </div>
   );

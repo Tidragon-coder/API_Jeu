@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import callApi from "../api/api";
+import { useNotification } from "../context/NotificationContext";
 
-const Login = () => {
+const Login = () => { // penser a changer Login => Register
+  const { notify } = useNotification();
   const [name, setName] = useState("");
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
@@ -21,12 +23,8 @@ const Login = () => {
 
       const {message } = res;
 
-
-      // ✅ Message de succès
-      setMessage(message || "Compte créé avec success ✅");
-
-      
-        navigate("/login");
+      notify(message || "Compte cree avec success", "success");
+      navigate("/login");
       
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {

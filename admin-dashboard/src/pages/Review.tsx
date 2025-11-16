@@ -3,11 +3,13 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import callApi from "../api/api";
 import Error from "../components/molecules/Error";
+import { useNotification } from "../context/NotificationContext";
 
 import type { ErrorState } from "../types/error";
 import type { Review } from "../types/review";
 
 export default function Reviews() {
+  const { notify } = useNotification();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [games, setGames] = useState<{ _id: string; title: string }[]>([]);
   const [loading, setLoading] = useState(true);
@@ -92,15 +94,13 @@ export default function Reviews() {
       setReviews((prev) => [...prev, res.review]);
       setNewReview({ user: "", game: "", rating: 0, comment: "" });
       setShowForm(false);
+      notify("Avis ajouté.", "success");
       navigate("/reviews");
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        setError({
-          code: err.response?.status || 500,
-          message: err.response?.data?.message || "Erreur lors de la création de l’avis.",
-        });
+        notify(err.response?.data?.message || "Erreur lors de l'ajout de l'avis.", "error");
       } else {
-        setError({ code: 500, message: "Erreur inconnue." });
+        notify("Une erreur inattendue est survenue", "error");
       }
     }
   };

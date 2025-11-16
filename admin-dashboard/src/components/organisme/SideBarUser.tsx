@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNotification } from "../../context/NotificationContext";
 
 import callApi from "../../api/api";
 
@@ -15,6 +16,7 @@ interface SideBarUserProps {
 }
 
 export default function SideBarUser({ user, onClose }: SideBarUserProps) {
+    const { notify } = useNotification();
     const [error, setError] = useState<ErrorState>({ code: 0, message: "" });
     const [userData, setUserData] = useState<any>(null);
     const [putUser, setPutUser] = useState({
@@ -62,21 +64,18 @@ export default function SideBarUser({ user, onClose }: SideBarUserProps) {
             await callApi(`/users/${user}`, token, "PUT", preloading);
 
             setPutUser({ name: "", nickname: "", email: "", role: "", password: "" });
+            notify("Modification effectuée.", "success");
             onClose?.();
             window.location.reload();
 
         } catch (err: unknown) {
             if (axios.isAxiosError(err)) {
-                setError({
-                    code: err.response?.status || 500,
-                    message: err.response?.data?.message || "Erreur lors de la création de l’utilisateur.",
-                });
+                notify(err.response?.data?.message || "Erreur inattendue.", "error");
             } else {
-                setError({ code: 500, message: "Erreur inconnue." });
+                notify("Une erreur inattendue est survenue ❌", "error");
             }
         }
     };
-    console.log(sessionUserID, user)
     if (error.code)
         return (
             <div className="flex justify-center mt-8">

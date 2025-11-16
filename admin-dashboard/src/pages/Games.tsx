@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import callApi from "../api/api";
 import Error from "../components/molecules/Error";
+import { useNotification } from "../context/NotificationContext";
 
 import type { ErrorState } from "../types/error";
 import type { Game } from "../types/game";
 import type { Genre } from "../types/genre";
 
 export default function Games() {
+  const { notify } = useNotification();
   const [games, setGames] = useState<Game[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [loading, setLoading] = useState(true);
@@ -84,15 +86,13 @@ export default function Games() {
 
       setGames((prev) => [...prev, res.game]);
       setNewGame({ title: "", description: "", release_year: "", genre: "" });
+      notify("Jeu ajouté.", "success");
       setShowForm(false);
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        setError({
-          code: err.response?.status || 500,
-          message: err.response?.data?.message || "Erreur lors de l’ajout du jeu.",
-        });
+        notify(err.response?.data?.message || "Erreur lors de l'ajout du jeu.", "error");
       } else {
-        setError({ code: 500, message: "Erreur inconnue." });
+        notify("Une erreur inattendue est survenue", "error");
       }
     }
   };

@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import callApi from "../api/api";
 import Error from "../components/molecules/Error";
+import { useNotification } from "../context/NotificationContext";
 
 import type { ErrorState } from "../types/error";
 import type { Genre } from "../types/genre";
 
 export default function Genres() {
+  const { notify } = useNotification();
   const [genres, setGenres] = useState<Genre[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<ErrorState>({ code: 0, message: "" });
@@ -49,16 +51,14 @@ export default function Genres() {
 
       const res = await callApi("/genre/new", token, "POST", { name: newGenre.name });
       setGenres((prev) => [...prev, res.genre || res.data]);
+      notify("Genre ajouté.", "success");
       setNewGenre({ name: "" });
       setShowForm(false);
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        setError({
-          code: err.response?.status || 500,
-          message: err.response?.data?.message || "Erreur lors de la création du genre.",
-        });
+        notify(err.response?.data?.message || "Erreur inattendue.", "error");
       } else {
-        setError({ code: 500, message: "Erreur inconnue." });
+        notify("Une erreur inattendue est survenue", "error");
       }
     }
   };
@@ -76,18 +76,19 @@ export default function Genres() {
         if (!window.confirm(`Etes-vous sur de vouloir modif le genre ${name} ?`)) return;
       }
 
-      if (action === "delete") await callApi(`/genre/${id}`, token, "DELETE");
+      if (action === "delete"){
+        await callApi(`/genre/${id}`, token, "DELETE")
+        notify("Genre supprimé.", "success");
+      };
       if (action === "update") await callApi(`/genre/${id}`, token, "PUT");
+
 
       setGenres((prev) => prev.filter((genre) => genre._id !== id));
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        setError({
-          code: err.response?.status || 500,
-          message: err.response?.data?.message || "Erreur lors de la suppression du genre",
-        });
+        notify(err.response?.data?.message || "Erreur lors de la suppression du genre.", "error");
       } else {
-        setError({ code: 500, message: "Erreur inconnue." });
+        notify("Une erreur inattendue est survenue", "error");
       }
     }
   };

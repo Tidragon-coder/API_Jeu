@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import callApi from "../api/api";
 import Error from "../components/molecules/Error";
+import { useNotification } from "../context/NotificationContext";
 
 import type { ErrorState } from "../types/error";
 import type { GameList } from "../types/gameList";
 import type { Game } from "../types/game";
 
 export default function GameListPage() {
+  const { notify } = useNotification();
   const [gameList, setGameList] = useState<GameList[]>([]);
   const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
@@ -81,15 +83,13 @@ export default function GameListPage() {
 
       setGameList((prev) => [...prev, res.gamelist || res.data]);
       setNewGameList({ user: "", game: "", status: "Pending" });
+      notify("GameList ajouté.", "success");
       setShowForm(false);
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        setError({
-          code: err.response?.status || 500,
-          message: err.response?.data?.message || "Erreur lors de la création de la GameList.",
-        });
+        notify(err.response?.data?.message || "Erreur lors de l'ajout de la GameList.", "error");
       } else {
-        setError({ code: 500, message: "Erreur inconnue." });
+        notify("Une erreur inattendue est survenue", "error");
       }
     }
   };
