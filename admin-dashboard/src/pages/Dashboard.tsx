@@ -5,6 +5,8 @@ import callApi from "../api/api";
 import Error from "../components/molecules/Error";
 import type { ErrorState } from "../types/error";
 
+import Graph from "../components/molecules/GraphDashboard";
+
 export default function Dashboard() {
   const [totalUsers, setTotalUsers] = useState<number>(0);
   const [totalGames, setTotalGames] = useState<number>(0);
@@ -54,11 +56,16 @@ export default function Dashboard() {
   if (error.code) return <div className="flex justify-center mt-8"> <Error number={error.code} message={error.message} /> </div>;
 
   return (
-    <div className="p-6 grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-      <Card title="Total Users" value={totalUsers.toString()} />
-      <Card title="Games" value={totalGames.toString()} />
-      <Card title="Reviews" value={totalReviews.toString()} />
-      <Card title="Genres" value={totalGenres.toString()} />
-    </div>
+    <>
+      <div className="p-6 grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+        <Card title="Total Users" value={totalUsers.toString()} />
+        <Card title="Games" value={totalGames.toString()} />
+        <Card title="Reviews" value={totalReviews.toString()} />
+        <Card title="Genres" value={totalGenres.toString()} />
+      </div>
+
+    <Graph />
+
+    </>
   );
 }
