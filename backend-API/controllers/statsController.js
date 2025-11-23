@@ -11,7 +11,7 @@ exports.testOnline = async (req, res) => {
 exports.getUserStatsPerDay = async (req, res) => {
     try {
         const userStats = await User.find();
-        res.status(200).json(userStats);
+        res.status(200).json({ userStats, message: 'User stats fetched successfully' });
     } catch (error) {
         res.status(500).json({ Error: error.message, message: 'Error getting user stats' });
     }

@@ -27,7 +27,7 @@ app.use('/api/genre', genreRoutes);
 app.use('/api/stats', statsRoutes);
 
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+    res.json({ message: '🟢Serveur backend-API online' });
 });
 
 mongoose.connect(process.env.MONGO_URL)

@@ -15,6 +15,7 @@ services:
     ports:
       - "3000:3000" 
     volumes:
+      - /app/node_modules
       - ./backend-API/:/app
     env_file:
       - backend-API/.env
