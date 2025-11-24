@@ -7,12 +7,11 @@ const verifyToken = require('../middlewares/verifyToken');
 
 exports.createReview = async (req, res) => {
     try {
-        const { game, rating, comment  } = req.body;
-        const user = req.user.id;
+        const { user, game, rating, comment  } = req.body;
+        // const user = req.user.id; garder au besoin pour recup l'id de l'emetteur de l'avis
         if (!game) {
             return res.status(400).json({ message: 'Game name is required' });
         }   
-        
 
         const review = await Review.create({ game, rating, comment, user });
 
