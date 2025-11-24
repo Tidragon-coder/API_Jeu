@@ -14,6 +14,18 @@ exports.getAllUsers = async (req, res) => {
     }
 };
 
+exports.getMe = async (req, res) => {
+    try {
+        const users = await User.findById(req.user.id).select('-password');
+        if (!users) {
+            return res.status(404).json({ message: 'Me not found' });
+        }
+        res.status(200).json({ users, message: 'Me fetched successfully' });
+    } catch (error) {
+        res.status(500).json({ Error: error.message, message: 'Error fetching Me' });
+    }
+};
+
 exports.getUserById = async (req, res) => {
     try {
         const users = await User.findById(req.params.id).select('-password');
