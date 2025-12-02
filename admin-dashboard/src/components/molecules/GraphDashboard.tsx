@@ -27,7 +27,6 @@ export default function SimpleLineChart() {
             if (!token) return setError({ code: 401, message: "Token manquant." });
     
             const res = await callApi("/stats/user-stats/QperDay", token, "GET");
-            console.log(res.results)
             setUserDate(res.results)
         } catch (err) {
             if (axios.isAxiosError(err)) {

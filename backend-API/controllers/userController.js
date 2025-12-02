@@ -99,6 +99,9 @@ exports.updateUser = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
     try {
+        if (req.params.id === req.user.id) {
+            return res.status(400).json({ message: 'You cannot delete yourself' });
+        }
         const users = await User.findByIdAndDelete(req.params.id);
         if (!users) {
             return res.status(404).json({ message: 'User not found' });
