@@ -46,8 +46,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            cd ${{ secrets.VPS_PATH }}
-
+            cd /root/project/API_Jeu
             
             #  FRONTEND .ENV
             echo "Recreating admin-dashboard .env"
