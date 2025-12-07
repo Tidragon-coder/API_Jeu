@@ -63,8 +63,9 @@ export default function Dashboard() {
         <Card title="Reviews" value={totalReviews.toString()} />
         <Card title="Genres" value={totalGenres.toString()} />
       </div>
-
-    <Graph />
+      <div className="p-6">
+        <Graph />
+      </div>
 
     </>
   );
