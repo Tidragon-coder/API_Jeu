@@ -67,3 +67,5 @@ jobs:
             echo "Restarting docker containers..."
             docker compose -f compose.prod.yml down
             docker compose -f compose.prod.yml up -d --build
+
+            # end of script
