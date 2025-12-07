@@ -120,7 +120,7 @@ export default function Users() {
     );
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="p-6 max-w-7xl mx-auto">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-2xl font-semibold text-gray-800">Utilisateurs</h2>
         <button
@@ -168,7 +168,7 @@ export default function Users() {
         </form>
       )}
 
-      <div className="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200">
+      <div className="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200 ">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>

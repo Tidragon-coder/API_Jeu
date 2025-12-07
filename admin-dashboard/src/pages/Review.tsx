@@ -116,7 +116,7 @@ export default function Reviews() {
     );
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="p-6 max-w-7xl mx-auto">
       <h2 className="text-2xl font-bold text-gray-800 mb-6">Reviews</h2>
 
       <button
