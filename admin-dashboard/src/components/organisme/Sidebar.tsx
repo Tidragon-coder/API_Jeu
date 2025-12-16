@@ -1,4 +1,4 @@
-import { Home, Users, Gamepad2, Star, Tag } from "lucide-react";
+import { Home, Users, Gamepad2, Star, Tag, GitGraph} from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 export default function Sidebar() {
@@ -9,6 +9,7 @@ export default function Sidebar() {
     { name: "Reviews", path: "/reviews", icon: <Star size={18} /> },
     { name: "Genres", path: "/genres", icon: <Tag size={18} /> },
     { name: "Gamelist", path: "/gamelist", icon: <Gamepad2 size={18} /> },
+    { name: "Algo", path: "/algo", icon: <GitGraph size={18} /> },
   ];
 
   return (
