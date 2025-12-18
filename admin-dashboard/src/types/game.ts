@@ -5,5 +5,10 @@ export interface Game {
     title: string;
     description?: string;
     release_year?: number;
+    editor?: string;
     genre: Genre| string;
+    platform?: string;
+    slug?: string
+    mode?: string
+    perspective?: string
 }

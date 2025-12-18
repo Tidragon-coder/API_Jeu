@@ -3,7 +3,11 @@ const genreSchema = new mongoose.Schema({
   name: { 
         type: String,
         required: true
-    }
+    },
+  description: {
+        type: String,
+        required: false
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Genre', genreSchema);
@@ -13,5 +17,6 @@ module.exports = mongoose.model('Genre', genreSchema);
  * @example
  * {
  *   "name": "Action"
+ *   "description": "Genre de films d'action"
  * }
 */

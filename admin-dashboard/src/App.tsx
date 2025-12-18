@@ -25,7 +25,7 @@ function Protected() {
   return (
     <div className="flex">
       <Sidebar />
-      <main className="ml-60 w-full bg-gray-50 min-h-screen">
+      <main className="ml-60 w-full bg-gray-50 min-h-screen min-w-0">
         <Topbar />
         <Outlet />
       </main>
