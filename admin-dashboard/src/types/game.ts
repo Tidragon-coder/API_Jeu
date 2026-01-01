@@ -6,9 +6,11 @@ export interface Game {
     description?: string;
     release_year?: number;
     editor?: string;
-    genre: Genre| string;
+    genre: Genre| null;
     platform?: string;
     slug?: string
     mode?: string
     perspective?: string
 }
+
+export type GameID = string; 
