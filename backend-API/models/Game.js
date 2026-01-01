@@ -11,10 +11,30 @@ const gameSchema = new mongoose.Schema({
   release_year: { 
     type: Number
   },
+  editor: {
+    type: String,
+    required: false
+  },
   genre: { 
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Genre',
     required: true
+  },
+  platform: {
+    type: String,
+    required: false
+  },
+  mode: {
+    type: String, //multiplayer ou singleplayer
+    required: false
+  },
+  perspective: {
+    type: String, //FPS, TPS, Isometric
+    required: false
+  },
+  slug: {
+    type: String,
+    required: false
   }
 }, { timestamps: true });
 

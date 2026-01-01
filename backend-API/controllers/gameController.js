@@ -6,13 +6,13 @@ const Watchlist = require('../models/GameList');
 
 exports.createGame = async (req, res) => {
     try {
-        const { title, description, release_year, genre } = req.body;
+        const { title, description, release_year, genre, editor, platform, mode, perspective, slug } = req.body;
 
         if (!title) {
             return res.status(400).json({ message: 'Name is required' });
         }
 
-        const game = await Game.create({ title, description, release_year, genre });
+        const game = await Game.create({ title, description, release_year, genre, editor, platform, mode, perspective, slug });
 
         res.status(201).json({ game, message: 'Game created successfully' });
     } catch (error) {
@@ -59,7 +59,7 @@ exports.updateGame = async (req, res) => {
 
 exports.deleteGame = async (req, res) => {
     try {
-        const game = await game.findByIdAndDelete(req.params.id);
+        const game = await Game.findByIdAndDelete(req.params.id);
         if (!game) {
             return res.status(404).json({ message: 'game not found' });
         }

@@ -9,6 +9,7 @@ const reviewRoutes = require('./routes/reviewRoutes');
 const gameListRoutes = require('./routes/gameListRoutes');
 const genreRoutes = require('./routes/genreRoutes');
 const statsRoutes = require('./routes/statsRoutes');
+const algoRoutes = require('./routes/algoRoutes');
 
 const app = express();
 const port = 3000;
@@ -25,6 +26,7 @@ app.use('/api/review', reviewRoutes);
 app.use('/api/gamelist', gameListRoutes);
 app.use('/api/genre', genreRoutes);
 app.use('/api/stats', statsRoutes);
+app.use('/api/algo', algoRoutes);
 
 app.get('/', (req, res) => {
     res.json({ message: '🟢Serveur backend-API online' });
