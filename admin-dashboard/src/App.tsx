@@ -11,6 +11,7 @@ import Review from "./pages/Review";
 import Genres from "./pages/Genre";
 import Register from "./pages/register";
 import GameList from "./pages/GameList";
+import Algo from "./pages/algo"
 import NotificationList from "./components/molecules/NotificationList";
 
 function Protected() {
@@ -24,7 +25,7 @@ function Protected() {
   return (
     <div className="flex">
       <Sidebar />
-      <main className="ml-60 w-full bg-gray-50 min-h-screen">
+      <main className="ml-60 w-full bg-gray-50 min-h-screen min-w-0">
         <Topbar />
         <Outlet />
       </main>
@@ -52,6 +53,7 @@ export default function App() {
             <Route path="/reviews" element={<Review />} />
             <Route path="/genres" element={<Genres />} />
             <Route path="/gamelist" element={<GameList />} />
+            <Route path="/algo" element={<Algo />} />
           </Route>
 
           {/* Fallback */}

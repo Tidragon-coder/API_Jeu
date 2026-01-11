@@ -36,6 +36,22 @@ export default function Erreur({ number, message }: ErreurProps) {
         );
     }
 
+        if (number === 500) {
+        return (
+            <div className="rounded-xl p-6 text-center flex flex-col items-center justify-center bg-red-50 border border-red-300 shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24"><path fill="#c00" d="M1 21L12 2l11 19zm11-3q.425 0 .713-.288T13 17t-.288-.712T12 16t-.712.288T11 17t.288.713T12 18m-1-3h2v-5h-2z" /></svg>
+                <h3 className="text-3xl font-bold text-gray-500">{number}</h3>
+                <p className="text-2xl font-bold text-red-600 mb-2">Internal server error</p>
+                <p className="text-lg text-red-500">
+                    {message
+                        ? message
+                        : "An unexpected error occurred. Please try again later."}
+                </p>
+                <a href="/dashboard"><button className="bg-[#4F7C77] text-white px-4 py-2 rounded-lg hover:opacity-80 mt-4">Retour</button></a>
+            </div>
+        );
+    }
+
     return (
         <div className="rounded-xl p-6 text-center flex flex-col items-center justify-center bg-red-50 border border-gray-300 shadow-md">
             <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24"><path fill="#c00" d="M1 21L12 2l11 19zm11-3q.425 0 .713-.288T13 17t-.288-.712T12 16t-.712.288T11 17t.288.713T12 18m-1-3h2v-5h-2z" /></svg>

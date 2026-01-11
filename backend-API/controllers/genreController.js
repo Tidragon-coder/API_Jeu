@@ -2,13 +2,13 @@ const Genre = require('../models/Genre');
 
 exports.createGenre = async (req, res) => {
     try {
-        const { name } = req.body; 
+        const { name, description } = req.body; 
 
         if (!name) {
             return res.status(400).json({ message: 'Name is required' });
         }
 
-        const genre = await Genre.create({ name });
+        const genre = await Genre.create({ name, description });
 
         res.status(201).json({ genre, message: 'Genre created successfully' });
     } catch (error) {
