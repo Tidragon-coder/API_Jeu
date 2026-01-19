@@ -100,4 +100,4 @@ Merci d'ajouter des tests + de bien documenter les nouvelles routes.
 
 ## Licence
 
-Ce projet est sous licence MIT (à adapter si tu utilises une autre licence).
+Ce projet est sous licence MIT.
