@@ -11,10 +11,10 @@ export default function NotificationList() {
                     className={`text-white px-4 py-2 rounded-lg shadow-md ${n.type === "success" && "bg-green-500"
                     } ${n.type === "warning" && "bg-yellow-500"} ${
                         n.type === "error" && "bg-red-500"
-                    } ${n.type === "info" && "bg-blue-500"}`}
+                    } ${n.type === "info" && "bg-blue-400"}`}
                 >
 
-                {n.type === "success" && "✅"} {n.type === "warning" && "⚠️"} {n.type === "error" && "❌"} {n.type === "info" && "i️"}
+                {n.type === "success" && "✅"} {n.type === "warning" && "⚠️"} {n.type === "error" && "❌"} {n.type === "info" && "ℹ️"}
                     {n.message}
                 </div>
             ))}

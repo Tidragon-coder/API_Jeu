@@ -161,7 +161,8 @@ export default function Games() {
         <h2 className="text-2xl font-semibold">Games</h2>
         <button
           className="bg-[#4F7C77] text-white px-4 py-2 rounded-lg hover:opacity-80"
-          onClick={() => setShowForm(!showForm)}
+          // onClick={() => setShowForm(!showForm)}
+          onClick={() =>  notify("Formulaires non disponibles. Pour ajouter un jeu, veuillez utiliser l'API.", "info")}
         >
           {showForm ? "Cancel" : "+ Add Game"}
         </button>
@@ -221,7 +222,7 @@ export default function Games() {
       )}
 
       {isDrawerOpen && selectedGame && (
-
+        
         <SideBarGames game={selectedGame} genreFetch={genres} onClose={() => setIsDrawerOpen(false)} />
 
       )}
