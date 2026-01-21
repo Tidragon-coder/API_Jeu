@@ -42,6 +42,8 @@ export default function Topbar() {
   }, []);
 
   const handleLogout = () => {
+    if (!window.confirm("Etes-vous sur de vouloir vous deconnecter ?")) return;
+    localStorage.removeItem("id");
     localStorage.removeItem("token");
     window.location.href = "/"; // redirige vers la page de login
   };
