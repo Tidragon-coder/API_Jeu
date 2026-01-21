@@ -2,33 +2,47 @@ services:
   mongo:
     image: mongo:7.0
     restart: always
-    ports:
-      - "27017:27017" 
     volumes:
       - mongo-data:/data/db
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.runCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   node:
     build:
       context: backend-API
       dockerfile: Dockerfile.prod
-    container_name: backend
     ports:
-      - "3000:3000" 
+      - "3000:3000"
     env_file:
       - backend-API/.env
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: always
+
   vite:
     build:
       context: admin-dashboard
       dockerfile: Dockerfile.prod
-    container_name: frontend
+    ports:
+      - "4173:4173"
     env_file:
       - admin-dashboard/.env
-    ports:
-      - "4173:4173" 
     depends_on:
       - node
-    restart: unless-stopped
+    restart: always
+    networks:
+      - app-network
 
 volumes:
   mongo-data:
+
+networks:
+  app-network:
