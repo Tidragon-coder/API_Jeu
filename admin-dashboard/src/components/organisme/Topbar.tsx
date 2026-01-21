@@ -59,7 +59,7 @@ export default function Topbar() {
     );
   return (
   <header className="flex justify-between items-center px-6 py-3 bg-white shadow-sm">
-    <h2 className="text-xl font-semibold text-[#0D0A4B]">Admin Dashboard</h2>
+    <h2 className="text-xl font-semibold text-[#0D0A4B]">Dashboard Admin</h2>
 
     <div className="flex items-center gap-4">
       {name ? (
