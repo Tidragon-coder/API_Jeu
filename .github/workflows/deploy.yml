@@ -15,20 +15,20 @@ jobs:
 
       - name: Build backend image
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/backend:latest -f backend-API/Dockerfile.prod backend-API
+          docker build -t ghcr.io/tidragon-coder/backend:latest -f backend-API/Dockerfile.prod backend-API
 
       - name: Build frontend image
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/frontend:latest -f admin-dashboard/Dockerfile.prod admin-dashboard
+          docker build -t ghcr.io/tidragon-coder/frontend:latest -f admin-dashboard/Dockerfile.prod admin-dashboard
 
       - name: Login to GHCR
-        run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+        run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u tidragon-coder --password-stdin
 
       - name: Push backend image
-        run: docker push ghcr.io/${{ github.repository_owner }}/backend:latest
+        run: docker push ghcr.io/tidragon-coder/backend:latest
 
       - name: Push frontend image
-        run: docker push ghcr.io/${{ github.repository_owner }}/frontend:latest
+        run: docker push ghcr.io/tidragon-coder/frontend:latest
 
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1
