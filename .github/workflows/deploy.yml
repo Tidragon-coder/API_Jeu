@@ -22,7 +22,7 @@ jobs:
           docker build -t ghcr.io/tidragon-coder/frontend:latest -f admin-dashboard/Dockerfile.prod admin-dashboard
 
       - name: Login to GHCR
-        run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u tidragon-coder --password-stdin
+        run: echo ${{ secrets.SSH_PRIVATE_KEY }} | docker login ghcr.io -u tidragon-coder --password-stdin
 
       - name: Push backend image
         run: docker push ghcr.io/tidragon-coder/backend:latest
