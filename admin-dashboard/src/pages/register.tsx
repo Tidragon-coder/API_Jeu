@@ -1,36 +1,30 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import callApi from "../api/api";
+import { useNotification } from "../context/NotificationContext";
 
-const Login = () => {
+const Login = () => { // penser a changer Login => Register
+  const { notify } = useNotification();
   const [name, setName] = useState("");
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const navigate = useNavigate();
-  const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setMessage(null);
 
     try {
-      const res = await axios.post(`${apiUrl}/users/register`, {
-        name,
-        nickname,
-        email,
-        password,
-      });
 
-      const {message } = res.data;
+      const res = await callApi('/users/register', '', 'POST', {name, nickname, email, password});
 
+      const {message } = res;
 
-      // ✅ Message de succès
-      setMessage(message || "Compte créé avec success ✅");
-
-      
-        navigate("/login");
+      notify(message || "Compte cree avec success", "success");
+      navigate("/login");
       
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {

@@ -2,8 +2,8 @@ const Gamelist = require('../models/GameList');
 
 exports.createGamelist = async (req, res) => {
     try {
-        const { game, status  } = req.body;
-        const user = req.user.id;
+        const { user, game, status  } = req.body;
+        // const user = req.user.id; garder au besoin pour recup l'id de l'emetteur de l'avis
         if (!game) {
             return res.status(400).json({ message: 'Game name is required' });
         }

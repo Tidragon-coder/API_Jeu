@@ -10,6 +10,7 @@ router.post('/register', userController.createUser);
 
 // Route privé (JWT obligatoire)
 router.get('/', verifyToken, authorizeRole('admin'), userController.getAllUsers);
+router.get('/info/me', verifyToken, authorizeRole('admin'), userController.getMe)
 router.get('/:id', verifyToken, authorizeRole('admin'), userController.getUserById);
 router.put('/:id', verifyToken, authorizeRole('admin'), userController.updateUser);
 router.delete('/:id', verifyToken, authorizeRole('admin'), userController.deleteUser);

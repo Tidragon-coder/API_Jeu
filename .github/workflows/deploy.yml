@@ -3,28 +3,34 @@ name: CI/CD Deploy
 on:
   push:
     branches:
-      - feature/gitaction
+      - production
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Sync frontend build to VPS
-        uses: burnett01/rsync-deployments@5.2
-        with:
-          switches: -avzr --delete --exclude=".git" --exclude="node_modules" --exclude="mongo-data" --exclude="admin-dashboard/.env" --exclude="backend-API/.env"
-          path: admin-dashboard/
-          remote_path: ${{ secrets.VPS_PATH }}
-          remote_host: ${{ secrets.VPS_HOST }}
-          remote_user: ${{ secrets.VPS_USER }}
-          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
-          remote_port: 22
+      - name: Build backend image
+        run: |
+          docker build -t ghcr.io/tidragon-coder/backend:latest -f backend-API/Dockerfile.prod backend-API
 
-      - name: Restart application on VPS
+      - name: Build frontend image
+        run: |
+          docker build -t ghcr.io/tidragon-coder/frontend:latest -f admin-dashboard/Dockerfile.prod admin-dashboard
+
+      - name: Login to GHCR
+        run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u tidragon-coder --password-stdin
+
+      - name: Push backend image
+        run: docker push ghcr.io/tidragon-coder/backend:latest
+
+      - name: Push frontend image
+        run: docker push ghcr.io/tidragon-coder/frontend:latest
+
+      - name: Deploy to VPS
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -32,11 +38,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            cd /root/project/API_Jeu
-            echo "Recreating admin-dashboard .env"
-            cat > admin-dashboard/.env << EOF
-            VITE_API_URL=${{ secrets.VITE_API_URL }}
-            EOF
+            cd ${{ secrets.VPS_PATH }}
+            docker compose -f compose.prod.yml pull
             docker compose -f compose.prod.yml down
-            docker compose -f compose.prod.yml up -d --build
-
+            docker compose -f compose.prod.yml up -d

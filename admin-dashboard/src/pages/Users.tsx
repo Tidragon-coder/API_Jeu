@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import callApi from "../api/api";
+import Error from "../components/molecules/Error";
+import { useNotification } from "../context/NotificationContext";
 
-const apiUrl = import.meta.env.VITE_API_URL || '/api';
+import SideBarUser from "../components/organisme/SideBarUser";
 
-interface User {
-  _id: string;
-  name: string;
-  nickname?: string;
-  email: string;
-  role: string;
-  createdAt: string;
-}
+import type { ErrorState } from "../types/error";
+import type { User, UserId } from "../types/user";
 
 export default function Users() {
+  const { notify } = useNotification();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<ErrorState>({ code: 0, message: "" });
 
-  // États pour le formulaire d’ajout
   const [showForm, setShowForm] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<UserId | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [newUser, setNewUser] = useState({
     name: "",
     nickname: "",
@@ -26,27 +25,25 @@ export default function Users() {
     password: "",
   });
 
-
-  // Récupérer les utilisateurs
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        setError("Aucun token trouvé. Veuillez vous reconnecter.");
+        setError({ code: 401, message: "Aucun token trouvé. Veuillez vous reconnecter." });
         setLoading(false);
         return;
       }
 
-      const res = await axios.get(`${apiUrl}/users/`, {
-        headers: { Authorization: `bearer ${token}` },
-      });
-
-      setUsers(res.data.users || res.data);
+      const data = await callApi("/users/", token, "GET");
+      setUsers(data.users || data);
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        setError(err.response?.data?.message || "Erreur lors du chargement des utilisateurs.");
+        setError({
+          code: err.response?.status || 500,
+          message: err.response?.data?.message || "Erreur lors du chargement des utilisateurs.",
+        });
       } else {
-        setError("Erreur inconnue.");
+        setError({ code: 500, message: "Erreur inconnue." });
       }
     } finally {
       setLoading(false);
@@ -57,47 +54,73 @@ export default function Users() {
     fetchUsers();
   }, []);
 
-  // Ajouter un utilisateur
   const handleAddUser = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      if (!token) return alert("Token manquant.");
+      if (!token) return setError({ code: 401, message: "Token manquant." });
 
-      const res = await axios.post(
-        `${apiUrl}/users/register`,
-        {
-          name: newUser.name,
-          nickname: newUser.nickname,
-          email: newUser.email,
-          password: newUser.password,
-        },
-        {
-          headers: { Authorization: `bearer ${token}` },
-        }
-      );
+      const res = await callApi("/users/register", token, "POST", {
+        name: newUser.name,
+        nickname: newUser.nickname,
+        email: newUser.email,
+        password: newUser.password,
+      });
 
-      // Ajout dans la liste locale
-      setUsers((prev) => [...prev, res.data.user]);
+      setUsers((prev) => [...prev, res.user]);
       setNewUser({ name: "", nickname: "", email: "", password: "" });
+      notify("Utilisateur ajouté.", "success");
       setShowForm(false);
+
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        setError(err.response?.data?.message || "Erreur lors de la création de l’utilisateur.");
+        notify(err.response?.data?.message || "Erreur lors de l'ajout de l'utilisateur.", "error");
       } else {
-        setError("Erreur inconnue.");
+        notify("Une erreur inattendue est survenue", "error");
       }
     }
   };
 
+  const handleDeleteUser = async (userID: string) => {
+    const id = localStorage.getItem("id");
+    if (id === userID) return notify("Vous ne pouvez pas vous supprimer.", "error");
+
+    if (!window.confirm(`Etes-vous sur de vouloir supprimer cet utilisateur: ${users.find((user) => user._id === userID)?.name} ?`)) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return setError({ code: 401, message: "Token manquant." });
+
+
+      await callApi(`/users/${userID}`, token, "DELETE");
+      setUsers((prev) => prev.filter((user) => user._id !== userID));
+      notify("Utilisateur supprimé.", "success");
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        notify(err.response?.data?.message || "Erreur lors de la suppression de l'utilisateur.", "error");
+      } else {
+        notify("Une erreur inattendue est survenue", "error");
+      }
+    }
+  };
+
+  const handlePutUser = (userID: string) => {
+    setSelectedUser(userID)
+    setIsDrawerOpen(true)
+  }
+
   if (loading)
     return <p className="text-center mt-8 text-gray-600">Chargement des utilisateurs...</p>;
 
-  if (error)
-    return <p className="text-center mt-8 text-red-500">{error}</p>;
+  if (error.code)
+    return (
+      <div className="flex justify-center mt-8">
+        <Error number={error.code} message={error.message} />
+      </div>
+    );
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="p-6 max-w-7xl mx-auto">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-2xl font-semibold text-gray-800">Utilisateurs</h2>
         <button
@@ -108,21 +131,20 @@ export default function Users() {
         </button>
       </div>
 
-      {/* Formulaire d’ajout d’un utilisateur */}
+      {isDrawerOpen && selectedUser && (
+        
+        <SideBarUser user={selectedUser} onClose={() => setIsDrawerOpen(false)} /> 
+        
+        )}
+
       {showForm && (
         <form
           onSubmit={handleAddUser}
           className="bg-white shadow-md rounded-lg p-4 mb-6 border border-gray-200"
         >
           <div className="grid grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="Nom"
-              value={newUser.name}
-              onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-              required
-              className="border p-2 rounded"
-            />
+            <input type="text" placeholder="Nom" value={newUser.name} onChange={(e) => setNewUser({ ...newUser, name: e.target.value })} required className="border p-2 rounded" />
+
             <input
               type="text"
               placeholder="Nickname"
@@ -131,34 +153,22 @@ export default function Users() {
               className="border p-2 rounded"
             />
             <input
-              type="email"
-              placeholder="Email"
-              value={newUser.email}
-              onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-              required
-              className="border p-2 rounded"
+              type="email" placeholder="Email" value={newUser.email} onChange={(e) => setNewUser({ ...newUser, email: e.target.value })} required className="border p-2 rounded"
             />
             <input
-              type="password"
-              placeholder="Mot de passe"
-              value={newUser.password}
-              onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-              required
-              className="border p-2 rounded"
+              type="password" placeholder="Mot de passe" value={newUser.password} onChange={(e) => setNewUser({ ...newUser, password: e.target.value })} required className="border p-2 rounded"
             />
           </div>
 
           <button
-            type="submit"
-            className="mt-4 bg-[#4F7C77] text-white px-4 py-2 rounded hover:opacity-80"
+            type="submit" className="mt-4 bg-[#4F7C77] text-white px-4 py-2 rounded hover:opacity-80"
           >
             Enregistrer
           </button>
         </form>
       )}
 
-      {/* Tableau des utilisateurs */}
-      <div className="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200">
+      <div className="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200 ">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
@@ -169,13 +179,22 @@ export default function Users() {
                 Nom
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Nickname
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Email
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Rôle
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                last login
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Date création
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Modification
               </th>
             </tr>
           </thead>
@@ -185,20 +204,38 @@ export default function Users() {
               <tr key={user._id} className="hover:bg-gray-50 transition-colors duration-150">
                 <td className="px-6 py-4 text-sm text-gray-500">{user._id}</td>
                 <td className="px-6 py-4 text-sm font-medium text-gray-900">{user.name}</td>
+                <td className="px-6 py-4 text-sm text-gray-500">{user.nickname}</td>
                 <td className="px-6 py-4 text-sm text-gray-500">{user.email}</td>
                 <td className="px-6 py-4 text-sm">
                   <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      user.role === "admin"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-blue-100 text-blue-800"
-                    }`}
+                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${user.role === "admin"
+                      ? "bg-red-100 text-red-800"
+                      : "bg-blue-100 text-blue-800"
+                      }`}
                   >
                     {user.role}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-500">
+                  {user.lastLogin ? (
+                    <span className="text-sm text-gray-500">
+                      {new Date(user.lastLogin).toLocaleDateString()}
+                    </span>
+                  ) : (
+                    <span className="text-sm text-gray-500">Aucun login</span>
+                  )}
+                </td>
+                <td className="px-6 py-4 text-sm text-gray-500">
                   {new Date(user.createdAt).toLocaleDateString()}
+                </td>
+                <td className="px-6 py-4 text-sm text-gray-500 flex space-x-4">
+
+                  <a onClick={() => handlePutUser(user._id)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#b89007" stroke-width="1.5" d="m14.36 4.079l.927-.927a3.932 3.932 0 0 1 5.561 5.561l-.927.927m-5.56-5.561s.115 1.97 1.853 3.707C17.952 9.524 19.92 9.64 19.92 9.64m-5.56-5.561l-8.522 8.52c-.577.578-.866.867-1.114 1.185a6.6 6.6 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.094 3.281m17.6-10.162L11.4 18.16c-.577.577-.866.866-1.184 1.114a6.6 6.6 0 0 1-1.211.749c-.364.173-.751.302-1.526.56l-3.281 1.094m0 0l-.802.268a1.06 1.06 0 0 1-1.342-1.342l.268-.802m1.876 1.876l-1.876-1.876" /></svg>
+                  </a>
+                  <a onClick={() => handleDeleteUser(user._id)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#d80808" d="M7 21q-.825 0-1.412-.587T5 19V6q-.425 0-.712-.288T4 5t.288-.712T5 4h4q0-.425.288-.712T10 3h4q.425 0 .713.288T15 4h4q.425 0 .713.288T20 5t-.288.713T19 6v13q0 .825-.587 1.413T17 21zM17 6H7v13h10zm-7 11q.425 0 .713-.288T11 16V9q0-.425-.288-.712T10 8t-.712.288T9 9v7q0 .425.288.713T10 17m4 0q.425 0 .713-.288T15 16V9q0-.425-.288-.712T14 8t-.712.288T13 9v7q0 .425.288.713T14 17M7 6v13z" /></svg>
+                  </a>
                 </td>
               </tr>
             ))}
