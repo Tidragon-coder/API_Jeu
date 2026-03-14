@@ -9,7 +9,7 @@ import Games from "./pages/Games";
 import Login from "./pages/login";
 import Review from "./pages/Review";
 import Genres from "./pages/Genre";
-import Register from "./pages/register";
+// import Register from "./pages/register"; deprecated - 14/03/2026 - impossibilité de s'inscrire sur le dashboard
 import GameList from "./pages/GameList";
 import Algo from "./pages/algo"
 import NotificationList from "./components/molecules/NotificationList";
@@ -41,7 +41,9 @@ export default function App() {
         <Routes>
           {/* Routes publiques */}
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+
+          {/* Deprecated - 14/03/2026 - impossibilité de s'inscrire sur le dashboard */}
+          {/* <Route path="/register" element={<Register />} /> */} 
 
           {/* Routes protégées */}
           <Route element={<Protected />}>

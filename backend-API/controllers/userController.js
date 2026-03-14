@@ -70,12 +70,20 @@ exports.logoutUser = async (req, res) => {
 
 exports.createUser = async (req, res) => {
     try {
-        const { name, nickname, email, password } = req.body;
+        const { name, nickname, email, password, role } = req.body;
+
+        if (role && role !== 'user') {
+            return res.status(400).json({ message: 'Cannot assign admin role during registration' });
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = (await User.create({ name, nickname, email, password: hashedPassword }));
+        const user = await User.create({ name, nickname, email, password: hashedPassword, role: 'user' });
 
         res.status(201).json({ user, message: 'User created successfully' });
     } catch (error) {
+        if (error.code === 11000) {
+            return res.status(409).json({ message: 'Email or nickname already in use' });
+        }
         res.status(500).json({ Error: error.message, message: 'Error creating user' });
     }
 }
