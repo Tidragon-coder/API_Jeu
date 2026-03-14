@@ -13,9 +13,7 @@ services:
       retries: 5
 
   node:
-    build:
-      context: backend-API
-      dockerfile: Dockerfile.prod
+    image: ghcr.io/tidragon-coder/backend:latest
     ports:
       - "3000:3000"
     env_file:
@@ -28,9 +26,7 @@ services:
     restart: always
 
   vite:
-    build:
-      context: admin-dashboard
-      dockerfile: Dockerfile.prod
+    image: ghcr.io/tidragon-coder/frontend:latest
     ports:
       - "4173:4173"
     env_file:

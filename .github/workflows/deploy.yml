@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - production
+      - test/IA
 
 jobs:
   build-and-deploy:
@@ -37,8 +38,10 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
+          envs: GHCR_TOKEN
           script: |
             cd ${{ secrets.VPS_PATH }}
+            echo $GHCR_TOKEN | docker login ghcr.io -u tidragon-coder --password-stdin
             docker compose -f compose.prod.yml pull
             docker compose -f compose.prod.yml down
             docker compose -f compose.prod.yml up -d
