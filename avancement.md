@@ -1,5 +1,6 @@
 # Améliorations (priorité décroissante)
-- [ ] Sécurité des rôles: mettre le rôle par défaut à `user`, créer un admin seedé, verrouiller l’inscription admin.
+- [x] Sécurité des rôles: mettre le rôle par défaut à `user`, verrouiller l’inscription admin.
+- [ ] Sécurité retrait du register sur dashboard
 - [ ] Validation d’entrée: schémas Joi/Zod sur toutes les routes, messages d’erreur clairs.
 - [x] CI/CD compose: aligner `compose.prod.yml` pour utiliser les images GHCR poussées (ou supprimer le push GHCR si build on-host).
 - [ ] Auth robuste: refresh token + rotation, expiry gérée côté front, stockage sécurisé (httpOnly si possible).
@@ -36,6 +37,13 @@
 - [ ] Politique d’avis: qui peut poster, fréquence, modération, signalement.
 - [ ] Recos (endpoint `/algo`): critères, tri, pagination, cache.
 - [ ] Accessibilité et perf: lazy load, skeletons, tailles images, SEO basique.
+
+## Infra front utilisateur
+- [ ] Choisir stack/front utilisateur (framework, UI, i18n, theming) distinct du dashboard.
+- [ ] Définir l’URL/API cible (VITE_API_URL) et CORS: exposer API + admin + front user sur le même VPS via ports dédiés ou reverse proxy (nginx/traefik) et sous-domaines `api/admin/app`.
+- [ ] Ajouter service `frontend-user` dans `compose.prod.yml` (port dédié ou via proxy), réseau partagé avec l’API.
+- [ ] Créer Dockerfile.prod + .dockerignore pour le front utilisateur, builder vers image GHCR.
+- [ ] Étendre CI/CD: build/push image front user vers GHCR, puis `docker compose pull/down/up` incluant ce service sur le VPS.
 
 
 # Algo (idées + impacts backend)
