@@ -41,8 +41,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           envs: GHCR_TOKEN
-          env:
-            GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
           script: |
             cd ${{ secrets.VPS_PATH }}
             git pull --ff-only
