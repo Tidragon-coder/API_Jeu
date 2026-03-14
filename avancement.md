@@ -1,6 +1,7 @@
 # Améliorations (priorité décroissante)
 - [ ] Sécurité des rôles: mettre le rôle par défaut à `user`, créer un admin seedé, verrouiller l’inscription admin.
 - [ ] Validation d’entrée: schémas Joi/Zod sur toutes les routes, messages d’erreur clairs.
+- [ ] CI/CD compose: aligner `compose.prod.yml` pour utiliser les images GHCR poussées (ou supprimer le push GHCR si build on-host).
 - [ ] Auth robuste: refresh token + rotation, expiry gérée côté front, stockage sécurisé (httpOnly si possible).
 - [ ] Journalisation/monitoring: logs structurés (pino/winston), tracing des requêtes, alerting basique.
 - [ ] Tests: API (Jest + Supertest), composants front critiques, scénarios e2e (Playwright).
