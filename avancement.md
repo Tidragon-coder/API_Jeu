@@ -1,6 +1,6 @@
 # Améliorations (priorité décroissante)
 - [x] Sécurité des rôles: mettre le rôle par défaut à `user`, verrouiller l’inscription admin.
-- [ ] Sécurité retrait du register sur dashboard
+- [x] Sécurité retrait du register sur dashboard
 - [ ] Validation d’entrée: schémas Joi/Zod sur toutes les routes, messages d’erreur clairs.
 - [x] CI/CD compose: aligner `compose.prod.yml` pour utiliser les images GHCR poussées (ou supprimer le push GHCR si build on-host).
 - [ ] Auth robuste: refresh token + rotation, expiry gérée côté front, stockage sécurisé (httpOnly si possible).
