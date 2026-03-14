@@ -28,7 +28,7 @@ services:
   vite:
     image: ghcr.io/tidragon-coder/frontend:latest
     ports:
-      - "4173:4173"
+      - "4173:80"
     env_file:
       - admin-dashboard/.env
     depends_on:
