@@ -6,6 +6,7 @@ import Topbar from "./components/organisme/Topbar";
 import Dashboard from "./pages/Dashboard";
 import Users from "./pages/Users";
 import Games from "./pages/Games";
+import GamesSteam from "./pages/GamesSteam";
 import Login from "./pages/login";
 import Review from "./pages/Review";
 import Genres from "./pages/Genre";
@@ -52,6 +53,7 @@ export default function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/users" element={<Users />} />
             <Route path="/games" element={<Games />} />
+            <Route path="/steam-games" element={<GamesSteam />} />
             <Route path="/reviews" element={<Review />} />
             <Route path="/genres" element={<Genres />} />
             <Route path="/gamelist" element={<GameList />} />

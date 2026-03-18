@@ -6,6 +6,7 @@ export default function Sidebar() {
     { name: "Dashboard", path: "/Dashboard", icon: <Home size={18} /> },
     { name: "Users", path: "/users", icon: <Users size={18} /> },
     { name: "Games", path: "/games", icon: <Gamepad2 size={18} /> },
+    { name: "Games Steam", path: "/steam-games", icon: <Gamepad2 size={18} /> },
     { name: "Reviews", path: "/reviews", icon: <Star size={18} /> },
     { name: "Genres", path: "/genres", icon: <Tag size={18} /> },
     { name: "Gamelist", path: "/gamelist", icon: <Gamepad2 size={18} /> },

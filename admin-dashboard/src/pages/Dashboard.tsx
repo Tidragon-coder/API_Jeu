@@ -10,6 +10,7 @@ import Graph from "../components/molecules/GraphDashboard";
 export default function Dashboard() {
   const [totalUsers, setTotalUsers] = useState<number>(0);
   const [totalGames, setTotalGames] = useState<number>(0);
+  const [totalGamesSteam, setTotalGamesSteam] = useState<number>(0);
   const [totalReviews, setTotalReviews] = useState<number>(0);
   const [totalGenres, setTotalGenres] = useState<number>(0);
   const [loading, setLoading] = useState(true);
@@ -26,15 +27,17 @@ export default function Dashboard() {
           return;
         }
 
-        const [usersRes, gamesRes, reviewsRes, genresRes] = await Promise.all([
+        const [usersRes, gamesRes, gamesSteamRes, reviewsRes, genresRes] = await Promise.all([
           callApi('/users/', token, 'GET'),
           callApi('/game/all', token, 'GET'),
+          callApi('/steam/', token, 'GET'),
           callApi('/review/all', token, 'GET'),
           callApi('/genre/all', token, 'GET'),
         ]);
 
         setTotalUsers(usersRes.users?.length || 0);
         setTotalGames(gamesRes.games?.length || 0);
+        setTotalGamesSteam(gamesSteamRes.games?.length || 0);
         setTotalReviews(reviewsRes.review?.length || 0);
         setTotalGenres(genresRes.genres?.length || 0);
       } catch (err) {
@@ -60,6 +63,7 @@ export default function Dashboard() {
       <div className="p-6 grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         <Card title="Total Users" value={totalUsers.toString()} />
         <Card title="Games" value={totalGames.toString()} />
+        <Card title="Games Steam" value={totalGamesSteam.toString()} />
         <Card title="Reviews" value={totalReviews.toString()} />
         <Card title="Genres" value={totalGenres.toString()} />
       </div>

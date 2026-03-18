@@ -11,12 +11,12 @@
 - [ ] A10 Optimisation DB: indexes sur champs utilisés (email, nickname, relations), projections pour alléger les listes.
 - [ ] A11 Limites et sécurité API: rate limiting, helmet, CORS restreint, taille corps requête limitée.
 - [ ] A12 Expérience admin: pagination/filtre/tri sur tables, états de chargement uniformes, toasts contextualisés.
-- [ ] A13 Données démo: scripts seed pour jeux/genres/reviews afin de tester rapidement le dashboard.
+- [x] A13 Données démo: scripts seed pour jeux Steam (download appids + seed 100 premiers) + script de purge collection.
 - [ ] A14 Hygiène repo: regrouper les `.gitignore` à la racine, harmoniser les patterns.
 - [ ] A15 Config: PORT configurable, variables d’URL d’API dans le front pour tous les environnements, gestion .env sécurisée.
 
 # Sources de données externes pour pré-peupler la base de données
-- [ ] S1 Évaluer une API publique de jeux (IGDB, RAWG, OpenCritic) pour pré-peupler genres/jeux; vérifier contraintes licences/quotas.
+- [x] S1 Source publique retenue pour jeux: liste complète d’appids Steam (API IStoreService + fallback GitHub).
 - [ ] S2 Concevoir un script d’ingestion (cron ou commande) avec mappage vers nos modèles, déduplication par slug/titre.
 - [ ] S3 Stocker l’ID source externe pour éviter les doublons et faciliter les mises à jour.
 - [ ] S4 Gérer les limites de taux (backoff) et la pagination lors de l’import.
@@ -29,6 +29,7 @@
 - [ ] CF-B4 Indexes sur `email`, `nickname`, relations; vérifier performances des populate.
 - [ ] CF-B5 Tests API (Jest/Supertest) + lint CI.
 - [ ] CF-B6 Scripts seed données (genres, jeux, users demo) pour démo rapide.
+- [ ] CF-B7 Code de validation par email.
 
 ## À réfléchir avant front utilisateur classique
 - [ ] CF-R1 Parcours auth/inscription: création compte user only, flow de validation email éventuelle.
