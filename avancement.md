@@ -14,6 +14,7 @@
 - [x] A13 Données démo: scripts seed pour jeux Steam (download appids + seed 100 premiers) + script de purge collection.
 - [ ] A14 Hygiène repo: regrouper les `.gitignore` à la racine, harmoniser les patterns.
 - [ ] A15 Config: PORT configurable, variables d’URL d’API dans le front pour tous les environnements, gestion .env sécurisée.
+- [ ] A16 Enhancement: Ajouter la possibilité de voir le mot de passe lors de la saisie dans les formulaires d’inscription et de connexion pour améliorer l’expérience utilisateur.
 
 # Sources de données externes pour pré-peupler la base de données
 - [x] S1 Source publique retenue pour jeux: liste complète d’appids Steam (API IStoreService + fallback GitHub).
